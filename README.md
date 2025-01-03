@@ -1,6 +1,6 @@
 # Data 200 X
 
-This repository contains materia for a Data 200 (Introduction to Data Science) being taught at CSUCI. This is a python
+This repository contains materia for a Data 200 (Introduction to Data Science) being taught at CSUCI. This is still a work in progress.
 
 This is work contains adapted material from [Data Science in a Box](https://datasciencebox.org/). Here are the list of changes made:
 
