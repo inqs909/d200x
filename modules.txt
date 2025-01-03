@@ -1,0 +1,8 @@
+pip install numpy
+pip install pandas
+pip install scipy
+pip install statsmodels
+pip install plotnine
+pip install polars
+pip install pyarrow
+pip install notebooks

@@ -1,0 +1,196 @@
+---
+title: "2A: Data and Visualisation"
+description: |
+  Provide a Brief Introduction of Data, Study Design, and the Data Generating Process.
+format:
+  revealjs:
+    scrollable: true
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute: 
+  echo: true
+---
+
+```{python}
+#| include: false
+import numpy as np
+import polars as pl
+import pandas as pd
+from plotnine import ggplot, geom_point, aes, labs, facet_wrap, geom_histogram
+starwars = pl.read_csv("https://raw.githubusercontent.com/tidyverse/dplyr/refs/heads/main/data-raw/starwars.csv",
+                       null_values = ["NA"])
+quartet = pl.read_csv("https://raw.githubusercontent.com/stephenturner/Tmisc/refs/heads/main/data-raw/quartet.csv")
+student_survey = pl.read_csv("https://raw.githubusercontent.com/tidyverse/dsbox/refs/heads/main/data-raw/student-survey/student-survey.csv")
+```
+
+# What is in a dataset?
+
+
+## Dataset terminology
+
+- Each row is an **observation**
+- Each column is a **variable**
+
+```{python}
+starwars["height"]
+```
+
+## Luke Skywalker
+
+
+## What's in the Star Wars data?
+
+Take a `glimpse` at the data:
+
+```{python}
+starwars.glimpse()
+```
+
+
+## DataFrame Parameters
+
+```{python}
+print(starwars.shape[0])
+print(starwars.shape[1])
+starwars.shape
+```
+
+## Name of Variables
+
+```{python}
+starwars.columns
+```
+
+## Filtering Data
+
+```{python}
+jabba = (
+    starwars
+    .filter(starwars.get_column("name") == "Jabba Desilijic Tiure")
+)
+```
+
+# Exploratory data analysis
+
+
+## What is EDA?
+
+- Exploratory data analysis (EDA) is an approach to analysing data sets to summarize its main characteristics
+- Often, this is visual -- this is what we'll focus on first
+- But we might also calculate summary statistics and perform data wrangling/manipulation/transformation at (or before) this stage of the analysis -- this is what we'll focus on next
+
+
+## Mass vs. height
+
+
+# Data visualization
+
+
+## Data visualization
+
+> *"The simple graph has brought more information to the data analyst's mind than any other device." --- John Tukey*
+
+- Data visualization is the creation and study of the visual representation of data
+- Many tools for visualizing data -- R is one of them
+- Many approaches/systems within R for making data visualizations -- **ggplot2** is one of them, and that's what we're going to use
+
+
+## plotnine
+
+```{python}
+(
+    ggplot(data = starwars.to_pandas(), mapping = aes(x = "height", y = "mass")) 
+    + geom_point() 
+    + labs(title = "Mass vs. height of Starwars characters",
+           x = "Height (cm)", y = "Weight (kg)")
+    + geom_point(data = jabba, size = 5, color = "pink", stroke = 3, alpha = 0.5)
+)
+```
+
+
+## Grammar of Graphics
+
+
+## Mass vs. height
+
+
+## Hello ggplot2!
+
+
+- The ggplot2 package comes with the tidyverse
+
+
+- For help with ggplot2, see [ggplot2.tidyverse.org](http://ggplot2.tidyverse.org/)
+
+# Why do we visualize?
+
+## Anscombe's quartet
+
+```{python}
+quartet
+```
+
+
+## Summarising Anscombe's quartet
+
+```{python}
+
+(
+  quartet
+  .group_by("set")
+  .agg(
+    mean_x = pl.mean("x"),
+    mean_y = pl.mean("y"),
+    sd_x = pl.std("x"),
+    sd_y = pl.std("y"),
+    r = pl.corr("x", "y")
+    )
+    .sort("set")
+
+)
+```
+
+
+## Visualizing Anscombe's quartet
+
+```{python}
+(
+    ggplot(data = quartet.to_pandas(), mapping = aes(x = "x", y = "y")) 
+    + geom_point() 
+    + facet_wrap("set")
+)
+```
+
+
+
+## Age at first kiss
+
+
+```{python}
+(
+  ggplot(student_survey.to_pandas(), aes(x = "first_kiss")) +
+  geom_histogram(binwidth = 1) +
+  labs(
+    title = "How old were you when you had your first kiss?", 
+    x = "Age (years)"
+    )
+)
+```
+
+## Facebook visits
+
+```{python}
+(
+  ggplot(student_survey.to_pandas(), aes(x = "fb_visits_per_day")) +
+  geom_histogram(binwidth = 1) +
+  labs(
+    title = "How many times do you go on Facebook per day?", 
+    x = "Number of times"
+    )
+)
+```

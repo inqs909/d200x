@@ -1,0 +1,194 @@
+---
+title: "3B: Data Preparation"
+subtitle: "Data Wrangling w/ Polars"
+description: |
+  Provide a Brief Introduction to Polars.
+format:
+  revealjs:
+    header-includes: |
+      <link href="slides.css" rel="stylesheet">
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute:
+  echo: true
+---
+
+## Modules and Data
+
+```{python}
+import polars as pl
+
+hotels = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv",
+                     null_values = ["NA"])
+```
+
+# Grammar of data wrangling
+
+
+## A grammar of data wrangling...
+
+... based on the concepts of functions as verbs that manipulate data frames
+
+
+:::: columns
+
+::: column
+
+![](https://pola.rs/share.jpg)
+
+:::
+
+::: column
+
+- `select`: pick columns by name
+- `sort`: reorder rows
+- `slice`: pick rows using index(es)
+- `filter`: pick rows matching criteria
+- `with_columns`: add new variables
+- `agg`: reduce variables to values
+- `group_by`: for grouped operations
+- ... (many more)
+
+:::
+::::
+
+::: footnote
+Source: [Polars Website](https://pola.rs/)
+:::
+
+## Rules of **polars** functions
+
+- First argument is *always* a data frame
+- Subsequent arguments say what to do with that data frame
+- Always return a data frame
+- Don't modify in place
+
+
+## Data: Hotel bookings
+
+- Data from two hotels: one resort and one city hotel
+- Observations: Each row represents a hotel booking
+- Goal for original data collection: Development of prediction models to classify a hotel booking's likelihood to be cancelled ([Antonia et al., 2019](https://www.sciencedirect.com/science/article/pii/S2352340918315191#bib5))
+
+```{python}
+#| eval: false
+hotels = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv",
+                     null_values = ["NA"])
+```
+
+::: footnote
+Source: [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md)
+:::
+
+
+## First look: Variables
+
+```{python}
+hotels.columns
+```
+
+
+## Second look: Overview
+
+```{python}
+hotels.glimpse()
+```
+
+
+## Select a single column
+
+View only `lead_time` (number of days between booking and arrival date):
+
+```{python}
+hotels.select("lead_time")
+```
+
+
+## Select multiple columns
+
+
+View only the `hotel` type and `lead_time`:
+
+
+```{python}
+hotels.select(["hotel", "lead_time"])
+```
+
+
+
+::: fragment
+:::question
+What if we wanted to select these columns, and then arrange the data in descending order of lead time?
+:::
+:::
+
+
+## Data wrangling, step-by-step
+
+:::: columns
+::: column
+Select:
+```{python}
+hotels.select(["hotel", "lead_time"])
+```
+
+:::
+::: column
+Select, then arrange:
+```{python}
+hotels.select(["hotel", "lead_time"]).sort("lead_time")
+```
+
+:::
+::::
+
+# Method-Chaining
+
+
+## Method-Chaining
+
+Method-chaining is the way to "chain" functions together to complete a task:
+
+
+:::: columns
+
+::: column
+
+
+```{python}
+hotels_select = hotels.select(["hotel", "lead_time"])
+hotels_select.sort("lead_time")
+```
+
+:::
+
+::: column
+
+```{python}
+hotels.select(["hotel", "lead_time"]).sort("lead_time")
+```
+
+:::
+
+::::
+
+
+
+## Method-Chaining
+
+You can rewrite a method-chained as a line-by-line task and surrounded by parantheses:
+
+```{python}
+(
+  hotels
+    .select(["hotel", "lead_time"])
+    .sort("lead_time")
+)
+```
+

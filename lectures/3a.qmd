@@ -1,0 +1,174 @@
+---
+title: "3A: Data Preparation"
+subtitle: "Tidy Data"
+description: |
+  Provide a Brief Introduction of Tidy Data.
+format:
+  revealjs:
+    header-includes: |
+      <link href="slides.css" rel="stylesheet">
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute: 
+  echo: true
+---
+
+## Modules and Data
+
+```{python}
+import polars as pl
+
+starwars = pl.read_csv("https://raw.githubusercontent.com/tidyverse/dplyr/refs/heads/main/data-raw/starwars.csv",
+                       null_values = ["NA"]
+                       )
+```
+
+
+## Tidy data
+
+>Happy families are all alike; every unhappy family is unhappy in its own way. 
+>
+>Leo Tolstoy
+
+
+
+:::: fragment
+:::: columns
+
+::: column
+
+**Characteristics of tidy data:**
+
+- Each variable forms a column.
+- Each observation forms a row.
+- Each type of observational unit forms a table.
+
+:::
+
+::: column
+
+**Characteristics of untidy data:**
+
+!@#$%^&*()
+
+:::
+::::
+::::
+
+## 
+
+::: question
+What makes this data not tidy?
+:::
+
+![](img/hyperwar-airplanes-on-hand.png)
+
+::: footnote
+Source: [Army Air Forces Statistical Digest, WW II](https://www.ibiblio.org/hyperwar/AAF/StatDigest/aafsd-3.html)
+:::
+
+##
+
+::: question
+What makes this data not tidy?
+:::
+
+![](img/hiv-est-prevalence-15-49.png)
+
+::: footnote
+Source: [Gapminder, Estimated HIV prevalence among 15-49 year olds](https://www.gapminder.org/data)
+:::
+
+##
+
+::: question
+What makes this data not tidy?
+:::
+
+![](img/us-general-economic-characteristic-acs-2017.png)
+
+
+::: footnote
+Source: [US Census Fact Finder, General Economic Characteristics, ACS 2017](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_DP03&src=pt)
+:::
+
+## Displaying vs. summarising data
+
+:::: panel-tabset
+
+### Output
+
+
+:::: columns
+
+::: column
+
+```{python}
+#| echo: false
+(
+    starwars 
+        .select(
+            pl.col("name"),
+            pl.col("height"),
+            pl.col("mass")
+        )
+)
+```
+
+:::
+
+::: column
+
+```{python}
+#| echo: false
+(
+    starwars
+        .group_by("gender")
+        .agg(avg_ht = pl.mean("height"))
+)
+```
+
+:::
+::::
+
+
+### Code
+
+:::: columns
+
+::: column
+
+```{python}
+#| eval: false
+(
+    starwars 
+        .select(
+            pl.col("name"),
+            pl.col("height"),
+            pl.col("mass")
+        )
+)
+```
+
+:::
+
+::: column
+
+```{python}
+#| eval: false
+(
+    starwars
+        .group_by("gender")
+        .agg(avg_ht = pl.mean("height"))
+)
+```
+
+:::
+::::
+::::

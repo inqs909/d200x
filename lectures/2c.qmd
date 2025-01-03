@@ -1,0 +1,322 @@
+---
+title: "2C: Data Visualisation"
+subtitle: "Numerical Data"
+description: |
+  Provide a Brief Introduction of Visualizing Numerical Data.
+format:
+  revealjs:
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute: 
+  echo: true
+---
+
+```{python}
+#| include: false
+from plotnine import *
+import polars as pl
+
+loan_full_schema = pl.read_csv("~/Repos/d200x/lectures/data/loans_full_schema.csv",
+                               null_values = ["NA"],
+                               infer_schema_length=10000)
+```
+
+
+# Terminology
+
+## Number of variables involved
+
+- Univariate data analysis - distribution of single variable
+- Bivariate data analysis - relationship between two variables
+- Multivariate data analysis - relationship between many variables at once, usually focusing on the relationship between two while conditioning for others
+
+
+## Types of variables
+
+- **Numerical variables** can be classified as **continuous** or **discrete** based on whether or not the variable can take on an infinite number of values or only non-negative whole numbers, respectively.
+- If the variable is **categorical**, we can determine if it is **ordinal** based on whether or not the levels have a natural ordering.
+
+
+# Data
+
+## Data: Lending Club
+
+:::: columns
+
+::: column
+
+- Thousands of loans made through the Lending Club, which is a platform that allows individuals to lend to other individuals
+
+- Not all loans are created equal -- ease of getting a loan depends on (apparent) ability to pay back the loan
+
+- Data includes loans *made*, these are not loan applications
+
+:::
+
+::: column
+![](img/lending-club.png)
+:::
+
+::::
+
+## Take a peek at data
+
+```{python}
+
+loan_full_schema.glimpse()
+```
+
+
+## Selected variables
+
+```{python}
+loans = (
+    loan_full_schema
+        .select(pl.col("loan_amount"), 
+                pl.col("interest_rate"), 
+                pl.col("term"), 
+                pl.col("grade"),
+                pl.col("state"), 
+                pl.col("annual_income"), 
+                pl.col("homeownership"), 
+                pl.col("debt_to_income"))
+
+)
+loans.glimpse()
+```
+
+
+## Selected variables
+
+
+|variable        | description
+|----------------|-------------
+|`loan_amount`   |	Amount of the loan received, in US dollars
+|`interest_rate` |	Interest rate on the loan, in an annual percentage
+|`term`	        | The length of the loan, which is always set as a whole number of months
+|`grade`	        | Loan grade, which takes a values A through G and represents the quality of the loan and its likelihood of being repaid
+|`state`         |	US state where the borrower resides
+|`annual_income` |	Borrower’s annual income, including any second income, in US dollars
+|`homeownership`	| Indicates whether the person owns, owns but has a mortgage, or rents
+|`debt_to_income` | Debt-to-income ratio
+
+## Variable types
+
+
+|variable        | type
+|----------------|-------------
+|`loan_amount`   |	numerical, continuous
+|`interest_rate` |	numerical, continuous
+|`term`	        | numerical, discrete
+|`grade`	        | categorical, ordinal
+|`state`         |	categorical, not ordinal
+|`annual_income` |	numerical, continuous
+|`homeownership`	| categorical, not ordinal
+|`debt_to_income` | numerical, continuous
+
+# Visualizing numerical data
+
+## Describing shapes of numerical distributions
+
+- shape:
+    - skewness: right-skewed, left-skewed, symmetric (skew is to the side of the longer tail)
+    - modality: unimodal, bimodal, multimodal, uniform
+- center: mean (`mean`), median (`median`), mode (not always useful)
+- spread: range (`range`), standard deviation (`sd`), inter-quartile range (`IQR`)
+- unusual observations
+
+# Histogram
+
+## Histogram
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_histogram()
+)
+```
+
+## Histograms and binwidth
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_histogram(binwidth = 1000)
+)
+```
+
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_histogram(binwidth = 5000)
+)
+```
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount")) 
+  + geom_histogram(binwidth = 20000)
+)
+```
+
+## Customizing histograms
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_histogram(binwidth = 5000)
+  + labs(
+    x = "Loan amount ($)",
+    y = "Frequency",
+    title = "Amounts of Lending Club loans" 
+  )
+)
+```
+
+## Fill with a categorical variable
+
+```{python}
+(
+ggplot(loans, aes(x = "loan_amount", 
+                  fill = "homeownership"))
+  + geom_histogram(binwidth = 5000,
+                 alpha = 0.5)
+  + labs(
+    x = "Loan amount ($)",
+    y = "Frequency",
+    title = "Amounts of Lending Club loans"
+  )
+)
+```
+
+
+## Facet with a categorical variable
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount", 
+                              fill = "homeownership")) 
+  + geom_histogram(binwidth = 5000)
+  + labs(
+    x = "Loan amount ($)",
+    y = "Frequency",
+    title = "Amounts of Lending Club loans"
+  ) 
+  + facet_wrap("homeownership", nrow = 3)
+)
+```
+
+# Density plot
+
+## Density plot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount")) 
+  + geom_density()
+)
+```
+
+
+## Density plots and adjusting bandwidth
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_density(adjust = 0.5)
+)
+```
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount")) 
+  + geom_density(adjust = 1) # default bandwidth
+)
+```
+
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount")) 
+  + geom_density(adjust = 2)
+)
+```
+
+## Customizing density plots
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount"))
+  + geom_density(adjust = 2)
+  + labs( 
+    x = "Loan amount ($)",
+    y = "Density",
+    title = "Amounts of Lending Club loans"
+   )
+)
+```
+
+## Adding a categorical variable
+
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "loan_amount", 
+                  fill = "homeownership"))
+  + geom_density(adjust = 2, 
+                alpha = 0.5)
+  + labs(
+      x = "Loan amount ($)",
+      y = "Density",
+      title = "Amounts of Lending Club loans", 
+      fill = "Homeownership"
+    )
+)
+```
+
+# Box plot
+
+## Box plot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "grade",
+                              y = "interest_rate"))
+  + geom_boxplot()
+)
+```
+
+## Customizing box plots
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "grade",
+                              y = "interest_rate"))
+  + geom_boxplot()
+  + labs(
+    y = "Interest rate (%)",
+    title = "Interest rates of Lending Club loans"
+    )
+)
+```
+
+
+# Relationships numerical variables
+
+## Scatterplot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "debt_to_income", 
+                              y = "interest_rate"))
+  + geom_point()
+)
+```
+

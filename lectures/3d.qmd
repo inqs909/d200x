@@ -1,0 +1,438 @@
+---
+title: "3D: Data Preparation"
+subtitle: "Multi Data Frame Functionality"
+description: |
+  Functions to alter multi data frames.
+format:
+  revealjs:
+    header-includes: |
+      <link href="slides.css" rel="stylesheet">
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute:
+  echo: true
+---
+
+## Modules and Data
+
+```{python}
+
+import polars as pl
+
+## Women in Science
+
+professions = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/professions.csv")
+dates = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/dates.csv")
+works = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/works.csv")
+
+
+## Students
+
+enrolment = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/students/enrolment.csv")
+survey = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/students/survey.csv")
+
+
+## Sales
+purchases = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/sales/purchases.csv")
+prices = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/sales/prices.csv")
+
+
+```
+
+## Data: Women in science 
+
+Information on 10 women in science who changed the world
+
+::: small
+```{python}
+#| echo: false
+professions.select("name")
+```
+
+:::
+
+::: footnote
+Source: [Discover Magazine](https://www.discovermagazine.com/the-sciences/meet-10-women-in-science-who-changed-the-world)
+:::
+
+
+## Inputs
+
+::: panel-tabset
+
+### Professions
+
+```{python}
+professions
+```
+
+### Dates
+
+```{python}
+dates
+```
+
+### Works
+
+```{python}
+works
+```
+
+:::
+
+## Desired output
+
+```{python}
+#| echo: false
+(
+    professions
+        .join(dates, on = "name", how = "left")
+        .join(works, on = "name", how = "left")
+)
+```
+
+
+## Inputs, reminder
+
+
+:::: midi
+:::: columns
+::: column
+
+```{python}
+
+professions.columns
+dates.columns
+works.columns
+```
+
+:::
+::: column
+
+```{python}
+professions.shape
+dates.shape
+works.shape
+```
+
+:::
+::::
+::::
+
+# Joining data frames
+
+## Joining data frames
+
+```{python}
+#| eval: false
+x.join(y, on = A1, how = A2)
+```
+
+- `.join()`: all data frames `x` and `y`
+- `on`: use `A1` (string) to link rows from `x` and `y`
+- `how`: combine data frames as recommed by `A2` (string)
+- ...
+ 
+
+## Setup
+
+For the next few slides...
+
+
+:::: midi
+
+:::: columns
+
+::: column
+
+```{python}
+
+x = pl.DataFrame({
+    "id": [1, 2, 3],
+    "value_x": ["x1", "x2", "x3"],
+})
+
+x
+```
+
+:::
+
+::: column
+
+```{python}
+
+y = pl.DataFrame({
+    "id": [1, 2, 4],
+    "value_y": ["y1", "y2", "y4"]
+})
+
+y
+```
+
+:::
+::::
+::::
+
+## Left Join
+
+:::: columns
+::: column
+
+![](img/left-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "left")
+```
+
+:::
+::::
+
+## Right Join
+
+:::: columns
+::: column
+
+![](img/right-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "right")
+```
+
+:::
+::::
+
+## Full Join
+
+:::: columns
+::: column
+
+![](img/full-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "full")
+```
+
+:::
+::::
+
+
+## Inner Join
+
+:::: columns
+::: column
+
+![](img/inner-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "inner")
+```
+
+:::
+::::
+
+## Semi Join
+
+:::: columns
+::: column
+
+![](img/semi-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "semi")
+```
+
+:::
+::::
+
+
+## Anti Join
+
+:::: columns
+::: column
+
+![](img/anti-join.gif)
+
+:::
+::: column
+
+```{python}
+x.join(y, on = "id", how = "anti")
+```
+
+:::
+::::
+
+
+## Multiple Joins
+
+```{python}
+
+(
+    professions
+        .join(dates, on = "name", how = "left")
+        .join(works, on = "name", how = "left")
+)
+```
+
+
+# Case study: Student records
+
+
+## Student records
+
+- Have:
+  - Enrolment: official university enrolment records
+  - Survey: Student provided info missing students who never filled it out and including students who filled it out but dropped the class
+- Want: Survey info for all enrolled in class 
+
+##
+
+
+:::: midi
+:::: columns
+::: column
+
+```{python}
+enrolment
+```
+
+:::
+
+::: column
+
+```{python}
+survey
+```
+
+:::
+::::
+::::
+
+## Student records
+
+::: panel-tabset
+
+### Left
+
+```{python}
+enrolment.join(survey, on = "id", how = "left") 
+```
+
+
+### Anti
+
+```{python}
+enrolment.join(survey, on = "id", how = "anti") 
+```
+
+:::
+
+
+# Case study: Grocery sales
+
+## Grocery sales
+
+- Have:
+  - Purchases: One row per customer per item, listing purchases they made
+  - Prices: One row per item in the store, listing their prices
+- Want: Total revenue
+
+##
+
+:::: columns
+::: column
+
+```{python}
+purchases
+```
+
+:::
+::: column
+
+```{python}
+prices
+```
+
+:::
+::::
+
+## Grocery sales
+
+
+
+
+::: panel-tabset
+
+### Stats
+
+:::: midi
+
+::: columns
+::: column
+```{python}
+purchases.join(prices, on = "item", how = "left")
+```
+:::
+::: column
+```{python}
+(
+    purchases
+        .join(prices, on = "item", how = "left")
+        .select(pl.sum("price"))
+)
+
+```
+
+:::
+:::
+::::
+
+### Aggregate Stats
+
+:::: midi
+:::: columns
+::: column
+
+```{python}
+purchases.join(prices, on = "item", how = "left")
+```
+
+:::
+::: column
+
+```{python}
+
+(
+    purchases
+        .join(prices, on = "item", how = "left")
+        .group_by("customer_id")
+        .agg(total_revenue = pl.sum("price"))
+)
+
+```
+
+:::
+::::
+::::
+::::

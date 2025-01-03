@@ -1,0 +1,5 @@
+---
+title: "Data: 200"
+---
+
+## Welcome to Data 200: Introduction to Data Science

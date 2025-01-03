@@ -1,0 +1,173 @@
+---
+title: "2D: Data Visualisation"
+subtitle: "Categorical Data"
+description: |
+  Provide a Brief Introduction of Visualizing Categorical Data.
+format:
+  revealjs:
+    header-includes: |
+      <link href="slides.css" rel="stylesheet">
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute: 
+  echo: true
+---
+
+## Loaded Modules and Data
+
+```{python}
+from plotnine import *
+import polars as pl
+
+loan_full_schema = pl.read_csv("~/Repos/d200x/lectures/data/loans_full_schema.csv",
+                               null_values = ["NA"],
+                               infer_schema_length=10000)
+```
+
+# Recap
+
+## Variables
+
+- **Numerical** variables can be classified as **continuous** or **discrete** based on whether or not the variable can take on an infinite number of values or only non-negative whole numbers, respectively.
+- If the variable is **categorical**, we can determine if it is **ordinal** based on whether or not the levels have a natural ordering.
+
+## Load Data
+
+
+```{python}
+#| eval: false
+loan_full_schema = pl.read_csv("~/Repos/d200x/lectures/data/loans_full_schema.csv",
+                               null_values = ["NA"],
+                               infer_schema_length=10000)
+```
+
+## Data 
+
+```{python}
+loans = (
+    loan_full_schema
+        .select(pl.col("loan_amount"), 
+                pl.col("interest_rate"), 
+                pl.col("term"), 
+                pl.col("grade"),
+                pl.col("state"), 
+                pl.col("annual_income"), 
+                pl.col("homeownership"), 
+                pl.col("debt_to_income"))
+
+)
+loans.glimpse()
+```
+
+
+# Bar plot
+
+
+## Bar plot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership"))
+  + geom_bar()
+)
+```
+
+
+## Segmented bar plot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", 
+                  fill = "grade"))
+  + geom_bar()
+)
+```
+
+
+## Segmented bar plot
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", fill = "grade")) 
+  + geom_bar(position = "fill")
+)
+```
+
+
+## Segmented Bar Plot
+
+:::: question
+Which bar plot is a more useful representation for visualizing the relationship between homeownership and grade?
+::::
+
+:::: columns
+
+::: column
+
+```{python}
+#| code-fold: true
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", fill = "grade")) 
+  + geom_bar()
+)
+```
+
+:::
+::: column
+
+```{python}
+#| code-fold: true
+
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", fill = "grade")) 
+  + geom_bar(position = "fill")
+)
+```
+
+:::
+::::
+
+
+## Customizing bar plots
+
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", 
+                              fill = "grade"))
+  + geom_bar(position = "fill")
+  + labs( 
+         x = "Proportion",
+         y = "Homeownership", 
+         fill = "Grade", 
+         title = "Grades of Lending Club loans", 
+         subtitle = "and homeownership of lendee" 
+        ) 
+)
+```
+
+
+# Relationships between numerical and categorical variables
+
+
+## Already talked about...
+
+- Colouring and faceting histograms and density plots
+- Side-by-side box plots
+
+
+## Violin plots
+
+```{python}
+(
+ggplot(loans.to_pandas(), aes(x = "homeownership", y = "loan_amount"))
+  + geom_violin()
+)
+```
+

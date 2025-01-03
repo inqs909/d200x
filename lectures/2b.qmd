@@ -1,0 +1,655 @@
+---
+title: "2B: Data Visualisation"
+subtitle: "with Plotnine (ggplot2)"
+description: |
+  Provide a Brief Introduction of Data, Study Design, and the Data Generating Process.
+format:
+  revealjs:
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute: 
+  echo: true
+---
+
+```{python}
+#| include: false
+from plotnine import *
+from palmerpenguins import load_penguins
+
+penguins = load_penguins().dropna()
+```
+
+# Plotnine (ggplot2)
+
+## ggplot2 $\in$ tidyverse
+
+-   `ggplot2` is tidyverse's data visualization package
+-   `plotnine` is Python's implementation of `ggplot2`
+-   Structure of the code for plots can be summarized as
+
+``` python
+(
+ggplot(data = [dataset], 
+       mapping = aes(x = "x-variable", 
+                     y = "y-variable")) +
+   geom_xxx() +
+   other options
+)
+```
+
+## Data: Palmer Penguins
+
+Measurements for penguin species, island in Palmer Archipelago, size (flipper length, body mass, bill dimensions), and sex.
+
+```{python}
+from palmerpenguins import load_penguins
+penguins = load_penguins().dropna()
+```
+
+```{python}
+(
+ggplot(data = penguins, 
+       mapping = aes(x = "bill_depth_mm", y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length",
+         subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+         x = "Bill depth (mm)", y = "Bill length (mm)",
+         colour = "Species")
+)
+```
+
+# Coding Outloud
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column}
+```{python}
+#| eval: false
+(
+ggplot(data = penguins)
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+
+#| echo: false
+(
+ggplot(data = penguins)
+)
+
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm"))
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm"))
+)
+
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm"))
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm"))
+)
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm"))
+  + geom_point()
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm"))
+  + geom_point()
+)
+```
+
+:::
+::::
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+)
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length")
+)
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length")
+)
+```
+
+:::
+::::
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species")) 
+  + geom_point() 
+  + labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins") #<<
+)
+
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species")) 
+  + geom_point() 
+  + labs(title = "Bill depth and length",
+         subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins")
+)
+
+```
+
+:::
+::::
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length",
+         subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+         x = "Bill depth (mm)", 
+         y = "Bill length (mm)")
+)
+
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)") #<<
+)
+
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length",
+         subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+         x = "Bill depth (mm)", 
+         y = "Bill length (mm)",
+         colour = "Species")
+)
+
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+  + labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", y = "Bill length (mm)",
+       colour = "Species") #<<
+)
+
+```
+
+:::
+::::
+
+
+## Coding Outloud {auto-animate="true"}
+
+:::: {.columns}
+::: {.column }
+```{python}
+#| eval: false
+
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species")) +
+  geom_point() +
+  labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", 
+       y = "Bill length (mm)",
+       colour = "Species",
+       caption = "Source: Palmer Station LTER / palmerpenguins package")
+)
+
+```
+
+:::
+
+::: {.column}
+```{python}
+#| echo: false
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species")) +
+  geom_point() +
+  labs(title = "Bill depth and length",
+       subtitle = "Dimensions for Adelie, Chinstrap, and Gentoo Penguins",
+       x = "Bill depth (mm)", 
+       y = "Bill length (mm)",
+       colour = "Species",
+       caption = "Source: Palmer Station LTER / palmerpenguins package")
+)
+
+```
+
+:::
+::::
+
+
+## Argument names
+
+You can omit the names of first two arguments when building plots with `ggplot()`.
+
+```{python}
+(
+ggplot(data = penguins,
+       mapping = aes(x = "bill_depth_mm",
+                     y = "bill_length_mm",
+                     colour = "species"))
+  + geom_point()
+) 
+
+```
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm",
+           y = "bill_length_mm",
+           colour = "species"))
+  + geom_point()
+)
+```
+
+# Aesthetics
+
+## Aesthetics options
+
+Commonly used characteristics of plotting characters that can be **mapped to a specific variable** in the data are
+
+-   `color`
+-   `shape`
+-   `size`
+-   `alpha` (transparency)
+
+## Colour
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm", 
+           y = "bill_length_mm",
+           color = "species"))  #<<
+  + geom_point() 
+)
+```
+
+## Shape
+
+Mapped to a different variable than `color`
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm", 
+           y = "bill_length_mm",
+           color = "species",
+           shape = "island")) #<<
+  + geom_point() 
+)
+
+```
+
+## Shape
+
+Mapped to same variable as `colour`
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm", 
+           y = "bill_length_mm",
+           colour = "species",
+           shape = "species"))  #<<
+  + geom_point()
+)
+```
+
+## Size
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm", 
+           y = "bill_length_mm",
+           color = "species",
+           shape = "species",
+           size = "body_mass_g"))  #<<
+  + geom_point()
+)
+```
+
+## Alpha
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm", 
+           y = "bill_length_mm",
+           color = "species",
+           shape = "species",
+           size = "body_mass_g",
+           alpha = "flipper_length_mm"))  #<<
+  + geom_point() 
+)  
+```
+
+**Mapping**
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm",
+           y = "bill_length_mm",
+           size = "body_mass_g", #<<
+           alpha = "flipper_length_mm"))  #<<
+  + geom_point()
+)
+```
+
+**Setting**
+
+```{python}
+(
+ggplot(penguins,
+       aes(x = "bill_depth_mm",
+           y = "bill_length_mm"))  
+  + geom_point(size = 2, alpha = 0.5) #<<
+)
+```
+
+## Mapping vs. setting
+
+-   **Mapping:** Determine the size, alpha, etc. of points based on the values of a variable in the data
+    -   goes into `aes()`
+-   **Setting:** Determine the size, alpha, etc. of points **not** based on the values of a variable in the data
+    -   goes into `geom_*()` (this was `geom_point()` in the previous example, but we'll learn about other geoms soon!)
+
+# Faceting
+
+## Faceting
+
+-   Smaller plots that display different subsets of the data
+-   Useful for exploring conditional relationships and large data
+
+```{python}
+(
+  ggplot(penguins, aes(x = "bill_depth_mm", y = "bill_length_mm"))
+    + geom_point()
+    + facet_grid(rows = "species",
+                 cols = "island") #<<
+)
+```
+
+## Various ways to facet
+
+.question\[ In the next few slides describe what each plot displays. Think about how the code relates to the output.
+
+**Note:** The plots in the next few slides do not have proper titles, axis labels, etc. because we want you to figure out what's happening in the plots. But you should always label your plots! \]
+
+```{python}
+(
+  ggplot(penguins, aes(x = "bill_depth_mm", y = "bill_length_mm"))
+    + geom_point()
+    + facet_grid(rows = "species",
+                 cols = "sex") #<<
+)
+```
+
+```{python}
+(
+  ggplot(penguins, aes(x = "bill_depth_mm", y = "bill_length_mm"))
+    + geom_point()
+    + facet_grid(cols = "species",
+                 rows = "sex") #<<
+)
+```
+
+```{python}
+(
+  ggplot(penguins, aes(x = "bill_depth_mm", y = "bill_length_mm"))
+    + geom_point()
+    + facet_wrap("species") #<<
+)
+```
+
+```{python}
+(
+  ggplot(penguins, aes(x = "bill_depth_mm", y = "bill_length_mm"))
+    + geom_point()
+    + facet_wrap("species", ncol = 2) #<<
+)
+```
+
+## Faceting summary
+
+-   `facet_grid()`:
+    -   2d grid
+-   `facet_wrap()`: 1d ribbon wrapped according to number of rows and columns specified or available plotting area
+
+## Facet and color
+
+```{python}
+(
+  ggplot(penguins, 
+         aes(x = "bill_depth_mm", 
+             y = "bill_length_mm",
+             color = "species"))
+    + geom_point()
+    + facet_grid(cols = "species",
+                 rows = "sex") #<<
+)
+```
+
+## Face and color, no legend
+
+```{python}
+(
+  ggplot(penguins, 
+         aes(x = "bill_depth_mm", 
+             y = "bill_length_mm",
+             color = "species"))
+    + geom_point()
+    + facet_grid(cols = "species",
+                 rows = "sex")
+    + guides(color = "none")
+)
+```

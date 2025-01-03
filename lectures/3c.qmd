@@ -1,0 +1,504 @@
+---
+title: "3C: Data Preparation"
+subtitle: "Single Data Frame Functionality"
+description: |
+  Functions to alter a single data frame.
+format:
+  revealjs:
+    header-includes: |
+      <link href="slides.css" rel="stylesheet">
+    navigation-mode: vertical
+    controls-layout: bottom-right
+    scrollable: true
+    controls-tutorial: true
+    incremental: false 
+    chalkboard:
+      theme: whiteboard
+      chalk-width: 4
+execute:
+  echo: true
+---
+
+## Modules and Data
+
+```{python}
+import polars as pl
+
+hotels = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv",
+                     null_values = ["NA"])
+
+```
+
+## Data: Hotel bookings
+
+- Data from two hotels: one resort and one city hotel
+- Observations: Each row represents a hotel booking
+
+```{python}
+#| eval: false
+hotels = pl.read_csv("https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv",
+                     null_values = ["NA"])
+```
+
+
+
+# `select`, `sort`, and `slice`
+
+
+## `select` to keep variables
+
+```{python}
+hotels.select(["hotel", "lead_time"])
+```
+
+
+## `drop` to exclude variables
+
+::: small
+```{python}
+hotels.drop(["agent"]) 
+```
+:::
+
+
+## `select` a range of variables
+
+```{python}
+(
+  hotels
+    .select(
+      pl.nth(range(hotels.get_column_index("hotel"),
+                   hotels.get_column_index("arrival_date_month")))
+    )
+)
+
+```
+
+
+## `select` variables with certain characteristics
+
+```{python}
+(
+  hotels
+    .select(pl.col("^arrival.*$"))
+)
+```
+
+
+## `select` variables with certain characteristics
+
+```{python}
+(
+  hotels
+    .select(pl.col("^*.type$"))
+)
+```
+
+
+
+## Select helpers
+
+- `starts_with()`: Starts with a prefix
+- `ends_with()`: Ends with a suffix
+- `contains()`: Contains a literal string
+- `num_range()`: Matches a numerical range like x01, x02, x03
+- `one_of()`: Matches variable names in a character vector
+- `everything()`: Matches all variables
+- `last_col()`: Select last variable, possibly with an offset
+- `matches()`: Matches a regular expression (a sequence of symbols/characters expressing a string/pattern to be searched for within text)
+
+::: footnote
+See help for any of these functions for more info, e.g. `?everything`.
+:::
+
+## `sort` in ascending / descending order
+
+:::: columns
+
+::: column
+
+```{python}
+(
+  hotels
+    .select(["adults", "children", "babies"])
+    .sort("babies")
+)
+
+```
+
+:::
+
+::: column
+
+```{python}
+(
+  hotels
+    .select(["adults", "children", "babies"])
+    .sort("babies", descending = True)
+)
+```
+
+:::
+::::
+
+
+## `slice` for certain row numbers
+
+::: midi
+```{python}
+(
+  hotels
+  .slice(0, 5)
+)
+```
+:::
+
+
+::: tip
+In Python, you can use the `#` for adding comments to your code. 
+Any text following `#` will be printed as is, and won't be run as R code.
+This is useful for leaving comments in your code and for temporarily disabling 
+certain lines of code while debugging.
+:::
+
+```{python}
+(
+  hotels
+  # slice the first five rows  # this line is a comment
+  # .select("hotel")           # this one doesn't run
+  .slice(0, 5)                 # Selects the first 5 rows
+)
+```
+
+# `filter`
+
+## `filter` to select a subset of rows
+
+```{python}
+# bookings in City Hotels
+(
+  hotels
+    .filter(pl.col("hotel") == "City Hotel")
+)
+```
+
+## `filter` for many conditions at once
+
+```{python}
+(
+  hotels
+    .filter( 
+      pl.col("adults") == 0,     
+      pl.col("children") >= 1    
+    )  
+    .select(["adults", "babies", "children"])
+)
+```
+
+
+## `filter` for more complex conditions
+
+```{python}
+# bookings with no adults and some children or babies in the room
+(
+  hotels
+    .filter( 
+      pl.col("adults") == 0,     
+      (pl.col("children") >= 1) | (pl.col("babies") >=1)    
+    )  
+    .select(["adults", "babies", "children"])
+)
+```
+
+
+## Logical operators in Python
+
+<br>
+
+operator    | definition                   || operator     | definition
+------------|------------------------------||--------------|----------------
+`<`         | less than                    ||`x`&nbsp;&#124;&nbsp;`y`     | `x` OR `y` 
+`<=`        |	less than or equal to        ||`is.na(x)`    | test if `x` is `NA`
+`>`         | greater than                 ||`!is.na(x)`   | test if `x` is not `NA`
+`>=`        |	greater than or equal to     ||`x %in% y`    | test if `x` is in `y`
+`==`        |	exactly equal to             ||`!(x %in% y)` | test if `x` is not in `y`
+`!=`        |	not equal to                 ||`!x`          | not `x`
+`x & y`     | `x` AND `y`                  ||              |
+
+---
+
+.your-turn[
+### Your turn!
+
+Time to actually play around with the Hotels dataset!
+
+- Go to RStudio Cloud and start `AE 04 - Hotels + Data wrangling`.
+- Open the R Markdown document and complete Exercises 1 - 4.
+]
+
+
+# `unique`
+
+## `unique` to filter for unique rows
+
+... and `sort` to order alphabetically
+
+
+```{python}
+(
+  hotels
+    .unique("market_segment")
+    .select("market_segment")
+    .sort("market_segment")
+)
+```
+
+
+# `with_columns`
+
+
+## `with_columns` to add a new variable
+
+```{python}
+(
+  hotels
+    .with_columns(
+      little_ones = pl.col("children") + pl.col("babies")
+    )
+    .select("children", "babies", "little_ones")
+    .sort("little_ones", descending = True)
+)
+
+```
+
+
+## Little ones in resort and city hotels
+
+:::: midi
+
+:::: columns
+
+::: column
+```{python}
+# Resort Hotel
+(
+  hotels
+    .with_columns(
+      little_ones = pl.col("children") + pl.col("babies")
+    )
+    .filter(
+      pl.col("little_ones") >= 1,
+      pl.col("hotel") == "Resort Hotel"
+    )
+    .select("children", "babies", "little_ones")
+)
+
+```
+
+:::
+
+::: column
+
+```{python}
+# City Hotel
+(
+  hotels
+    .with_columns(
+      little_ones = pl.col("children") + pl.col("babies")
+    )
+    .filter(
+      pl.col("little_ones") >= 1,
+      pl.col("hotel") == "City Hotel"
+    )
+    .select("children", "babies", "little_ones")
+)
+```
+
+:::
+
+::::
+::::
+
+# Summary Statistics
+
+## Summary Statistics
+
+```{python}
+# mean average daily rate for all bookings
+(
+  hotels
+    .select(pl.mean("adr"))
+)
+
+```
+
+## Multiple Summary Stats
+
+```{python}
+(
+  hotels
+    .select("adr")
+    .describe()
+)
+```
+
+
+## Summary Stats for DF
+
+```{python}
+hotels.describe()
+```
+
+
+# `agg` and `group_by`
+
+
+## `group_by` for grouped operations
+
+```{python}
+# mean average daily rate for all booking at city and resort hotels
+(
+  hotels
+    .group_by("hotel")
+)
+
+```
+
+## `agg` for summary stats
+(
+  hotels
+    .group_by("hotel")
+    .agg(mean_adr = pl.mean("adr"),
+         median_adr = pl.median("adr")
+    )
+)
+
+```{python}
+(
+  hotels
+    .group_by("hotel")
+    .agg(mean_adr = pl.mean("adr"))
+)
+```
+
+## `agg` for multi summary stats
+
+```{python}
+(
+  hotels
+    .group_by("hotel")
+    .agg(mean_adr = pl.mean("adr"),
+         median_adr = pl.median("adr")
+    )
+)
+```
+
+## `agg` for correlation
+
+
+```{python}
+(
+  hotels
+    .group_by("hotel")
+    .agg(mean_adr = pl.mean("adr"),
+         median_adr = pl.median("adr"),
+         corr_child_babies = pl.corr("children", "babies")
+    )
+)
+
+```
+
+
+
+## Calculating Frequencies
+
+```{python}
+(
+  hotels
+    .select("market_segment")
+    .group_by("market_segment")
+    .agg(count = pl.len())
+)
+```
+
+
+
+
+## Calculating Frequencies for multiple variables
+
+```{python}
+(
+  hotels
+    .select("hotel", "market_segment")
+    .group_by("hotel", "market_segment")
+    .agg(count = pl.len())
+)
+```
+
+
+## order matters when you `len`
+
+:::: midi
+
+:::: columns
+
+::: column
+
+```{python}
+# hotel type first
+(
+  hotels
+    .select("hotel", "market_segment")
+    .group_by("hotel", "market_segment")
+    .agg(count = pl.len())
+)
+```
+
+:::
+
+::: column
+
+```{python}
+# market segment first
+(
+  hotels
+    .select("market_segment", "hotel")
+    .group_by("market_segment", "hotel")
+    .agg(count = pl.len())
+)
+```
+
+:::
+::::
+::::
+
+
+##
+
+::: question
+What is happening in the following chunk?
+:::
+
+::: midi
+```{python}
+
+(
+  hotels
+    .with_columns(
+      little_ones = pl.col("children") + pl.col("babies")
+    )
+    .filter(
+      pl.col("little_ones") >= 1,
+      pl.col("hotel") == "City Hotel"
+    )
+    .select("children", "babies", "little_ones")
+)
+
+#hotels %>%
+#  mutate(little_ones = children + babies) %>%
+#  count(hotel, little_ones) %>%
+#  mutate(prop = n / sum(n))
+```
+:::
+
+
