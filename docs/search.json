@@ -1,0 +1,1101 @@
+[
+  {
+    "objectID": "lectures/3e.html#modules-and-data",
+    "href": "lectures/3e.html#modules-and-data",
+    "title": "3E: Data Preparation",
+    "section": "Modules and Data",
+    "text": "Modules and Data\n\nimport polars as pl\n\ncustomers &lt;- pl.read_csv(\"data/sales/customers.csv\")\nprices &lt;- pl.read_csv(\"data/sales/prices.csv\")\n\n\n.pull-left[ ### .green[We have…]\n\ncustomers\n\n]\n\n\n\n\n\n\n.pull-right[ ### .pink[We want…]\n\n\n::: {#a7c3bbe1 .cell execution_count=3}\n\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#a-grammar-of-data-tidying",
+    "href": "lectures/3e.html#a-grammar-of-data-tidying",
+    "title": "3E: Data Preparation",
+    "section": "A grammar of data tidying",
+    "text": "A grammar of data tidying\n.pull-left[\n\n#r dplyr-part-of-tidyverse, echo=FALSE, out.width=\"60%\", caption = \"tidyr is part of the tidyverse\"}\ninclude_graphics(\"img/tidyr-part-of-tidyverse.png\")\n\n] .pull-right[ The goal of tidyr is to help you tidy your data via\n\npivoting for going between wide and long data\nsplitting and combining character columns\nnesting and unnesting columns\nclarifying how NAs should be treated"
+  },
+  {
+    "objectID": "lectures/3e.html#not-this",
+    "href": "lectures/3e.html#not-this",
+    "title": "3E: Data Preparation",
+    "section": "Not this…",
+    "text": "Not this…\n\ninclude_graphics(\"img/pivot.gif\")"
+  },
+  {
+    "objectID": "lectures/3e.html#but-this",
+    "href": "lectures/3e.html#but-this",
+    "title": "3E: Data Preparation",
+    "section": "but this!",
+    "text": "but this!\n.center[\n\ninclude_graphics(\"img/tidyr-longer-wider.gif\")\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#wider-vs.-longer",
+    "href": "lectures/3e.html#wider-vs.-longer",
+    "title": "3E: Data Preparation",
+    "section": "Wider vs. longer",
+    "text": "Wider vs. longer\n.pull-left[ ### .green[wider] more columns\n\ncustomers\n\n]\n\n\n\n\n\n\n.pull-right[ ### .pink[longer] more rows\n\n\n::: {#b4a5c5f7 .cell execution_count=8}\n\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#pivot_longer",
+    "href": "lectures/3e.html#pivot_longer",
+    "title": "3E: Data Preparation",
+    "section": "pivot_longer()",
+    "text": "pivot_longer()\n.pull-left[ - data (as usual)] .pull-right[\n\npivot_longer(\n  data, #&lt;&lt;\n  cols, \n  names_to = \"name\", \n  values_to = \"value\"\n  )\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#pivot_longer-1",
+    "href": "lectures/3e.html#pivot_longer-1",
+    "title": "3E: Data Preparation",
+    "section": "pivot_longer()",
+    "text": "pivot_longer()\n.pull-left[ - data (as usual) - cols: columns to pivot into longer format ] .pull-right[\n\npivot_longer(\n  data, \n  cols, #&lt;&lt;\n  names_to = \"name\", \n  values_to = \"value\"\n  )\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#pivot_longer-2",
+    "href": "lectures/3e.html#pivot_longer-2",
+    "title": "3E: Data Preparation",
+    "section": "pivot_longer()",
+    "text": "pivot_longer()\n.pull-left[ - data (as usual) - cols: columns to pivot into longer format - names_to: name of the column where column names of pivoted variables go (character string)] .pull-right[\n\npivot_longer(\n  data, \n  cols, \n  names_to = \"name\", #&lt;&lt;\n  values_to = \"value\"\n  )\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#pivot_longer-3",
+    "href": "lectures/3e.html#pivot_longer-3",
+    "title": "3E: Data Preparation",
+    "section": "pivot_longer()",
+    "text": "pivot_longer()\n.pull-left[ - data (as usual) - cols: columns to pivot into longer format - names_to: name of the column where column names of pivoted variables go (character string) - values_to: name of the column where data in pivoted variables go (character string)] .pull-right[\n\npivot_longer(\n  data, \n  cols, \n  names_to = \"name\", \n  values_to = \"value\" #&lt;&lt;\n  )\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#customers-rightarrow-purchases",
+    "href": "lectures/3e.html#customers-rightarrow-purchases",
+    "title": "3E: Data Preparation",
+    "section": "Customers \\(\\rightarrow\\) purchases",
+    "text": "Customers \\(\\rightarrow\\) purchases\n\npurchases &lt;- customers %&gt;%\n  pivot_longer( #&lt;&lt;\n    cols = item_1:item_3,  # variables item_1 to item_3 #&lt;&lt;\n    names_to = \"item_no\",  # column names -&gt; new column called item_no #&lt;&lt;\n    values_to = \"item\"     # values in columns -&gt; new column called item #&lt;&lt;\n    ) #&lt;&lt;\n\npurchases"
+  },
+  {
+    "objectID": "lectures/3e.html#why-pivot",
+    "href": "lectures/3e.html#why-pivot",
+    "title": "3E: Data Preparation",
+    "section": "Why pivot?",
+    "text": "Why pivot?\nMost likely, because the next step of your analysis needs it\n–\n.pull-left[\n\nprices\n\n] .pull-right[\n\npurchases %&gt;%\n  left_join(prices) #&lt;&lt;\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#purchases-rightarrow-customers",
+    "href": "lectures/3e.html#purchases-rightarrow-customers",
+    "title": "3E: Data Preparation",
+    "section": "Purchases \\(\\rightarrow\\) customers",
+    "text": "Purchases \\(\\rightarrow\\) customers\n.pull-left-narrow[ - data (as usual) - names_from: which column in the long format contains the what should be column names in the wide format - values_from: which column in the long format contains the what should be values in the new columns in the wide format] .pull-right-wide[\n\npurchases %&gt;%\n  pivot_wider( #&lt;&lt;\n    names_from = item_no, #&lt;&lt;\n    values_from = item #&lt;&lt;\n  ) #&lt;&lt;\n\n]"
+  },
+  {
+    "objectID": "lectures/3e.html#data",
+    "href": "lectures/3e.html#data",
+    "title": "3E: Data Preparation",
+    "section": "Data",
+    "text": "Data\n\ntrump &lt;- read_csv(\"data/trump/trump.csv\")\n\n\ntrump"
+  },
+  {
+    "objectID": "lectures/3e.html#goal",
+    "href": "lectures/3e.html#goal",
+    "title": "3E: Data Preparation",
+    "section": "Goal",
+    "text": "Goal\n.pull-left-wide[\n\ntrump %&gt;%\n  pivot_longer(\n    cols = c(approval, disapproval),\n    names_to = \"rating_type\",\n    values_to = \"rating_value\"\n  ) %&gt;%\n  ggplot(aes(x = date, y = rating_value, \n             color = rating_type, group = rating_type)) +\n  geom_line() +\n  facet_wrap(~ subgroup) +\n  scale_color_manual(values = c(\"darkgreen\", \"orange\")) + \n  labs( \n    x = \"Date\", y = \"Rating\", \n    color = NULL, \n    title = \"How (un)popular is Donald Trump?\", \n    subtitle = \"Estimates based on polls of all adults and polls of likely/registered voters\", \n    caption = \"Source: FiveThirtyEight modeling estimates\" \n  ) + \n  theme_minimal() +\n  theme(legend.position = \"bottom\")"
+  },
+  {
+    "objectID": "lectures/3e.html#section",
+    "href": "lectures/3e.html#section",
+    "title": "3E: Data Preparation",
+    "section": "]",
+    "text": "]\n.pull-right-narrow[ Aesthetic mappings:\nr emo::ji(\"check\") x = date\nr emo::ji(\"x\") y = rating_value\nr emo::ji(\"x\") color = rating_type\nFacet:\nr emo::ji(\"check\") subgroup (Adults and Voters) ]"
+  },
+  {
+    "objectID": "lectures/3e.html#pivot",
+    "href": "lectures/3e.html#pivot",
+    "title": "3E: Data Preparation",
+    "section": "Pivot",
+    "text": "Pivot\n\ntrump_longer &lt;- trump %&gt;%\n  pivot_longer(\n    cols = c(approval, disapproval),\n    names_to = \"rating_type\",\n    values_to = \"rating_value\"\n  )\n\ntrump_longer"
+  },
+  {
+    "objectID": "lectures/3e.html#plot",
+    "href": "lectures/3e.html#plot",
+    "title": "3E: Data Preparation",
+    "section": "Plot",
+    "text": "Plot\n\nggplot(trump_longer, \n       aes(x = date, y = rating_value, color = rating_type, group = rating_type)) +\n  geom_line() +\n  facet_wrap(~ subgroup)"
+  },
+  {
+    "objectID": "lectures/3c.html#modules-and-data",
+    "href": "lectures/3c.html#modules-and-data",
+    "title": "3C: Data Preparation",
+    "section": "Modules and Data",
+    "text": "Modules and Data\n\nimport polars as pl\n\nhotels = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv\",\n                     null_values = [\"NA\"])"
+  },
+  {
+    "objectID": "lectures/3c.html#data-hotel-bookings",
+    "href": "lectures/3c.html#data-hotel-bookings",
+    "title": "3C: Data Preparation",
+    "section": "Data: Hotel bookings",
+    "text": "Data: Hotel bookings\n\nData from two hotels: one resort and one city hotel\nObservations: Each row represents a hotel booking\n\n\nhotels = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv\",\n                     null_values = [\"NA\"])"
+  },
+  {
+    "objectID": "lectures/3c.html#select-to-keep-variables",
+    "href": "lectures/3c.html#select-to-keep-variables",
+    "title": "3C: Data Preparation",
+    "section": "select to keep variables",
+    "text": "select to keep variables\n\nhotels.select([\"hotel\", \"lead_time\"])\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n342\n\n\n\"Resort Hotel\"\n737\n\n\n\"Resort Hotel\"\n7\n\n\n\"Resort Hotel\"\n13\n\n\n\"Resort Hotel\"\n14\n\n\n…\n…\n\n\n\"City Hotel\"\n23\n\n\n\"City Hotel\"\n102\n\n\n\"City Hotel\"\n34\n\n\n\"City Hotel\"\n109\n\n\n\"City Hotel\"\n205"
+  },
+  {
+    "objectID": "lectures/3c.html#drop-to-exclude-variables",
+    "href": "lectures/3c.html#drop-to-exclude-variables",
+    "title": "3C: Data Preparation",
+    "section": "drop to exclude variables",
+    "text": "drop to exclude variables\n\n\nhotels.drop([\"agent\"]) \n\n\nshape: (119_390, 31)\n\n\n\nhotel\nis_canceled\nlead_time\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\nstays_in_weekend_nights\nstays_in_week_nights\nadults\nchildren\nbabies\nmeal\ncountry\nmarket_segment\ndistribution_channel\nis_repeated_guest\nprevious_cancellations\nprevious_bookings_not_canceled\nreserved_room_type\nassigned_room_type\nbooking_changes\ndeposit_type\ncompany\ndays_in_waiting_list\ncustomer_type\nadr\nrequired_car_parking_spaces\ntotal_of_special_requests\nreservation_status\nreservation_status_date\n\n\nstr\ni64\ni64\ni64\nstr\ni64\ni64\ni64\ni64\ni64\ni64\ni64\nstr\nstr\nstr\nstr\ni64\ni64\ni64\nstr\nstr\ni64\nstr\nstr\ni64\nstr\nf64\ni64\ni64\nstr\nstr\n\n\n\n\n\"Resort Hotel\"\n0\n342\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n3\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n737\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n4\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n7\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"A\"\n\"C\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n13\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Corporate\"\n\"Corporate\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n14\n2015\n\"July\"\n27\n1\n0\n2\n2\n0\n0\n\"BB\"\n\"GBR\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n98.0\n0\n1\n\"Check-Out\"\n\"2015-07-03\"\n\n\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n\n\n\"City Hotel\"\n0\n23\n2017\n\"August\"\n35\n30\n2\n5\n2\n0\n0\n\"BB\"\n\"BEL\"\n\"Offline TA/TO\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n96.14\n0\n0\n\"Check-Out\"\n\"2017-09-06\"\n\n\n\"City Hotel\"\n0\n102\n2017\n\"August\"\n35\n31\n2\n5\n3\n0\n0\n\"BB\"\n\"FRA\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"E\"\n\"E\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n225.43\n0\n2\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n34\n2017\n\"August\"\n35\n31\n2\n5\n2\n0\n0\n\"BB\"\n\"DEU\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"D\"\n\"D\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n157.71\n0\n4\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n109\n2017\n\"August\"\n35\n31\n2\n5\n2\n0\n0\n\"BB\"\n\"GBR\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n104.4\n0\n0\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n205\n2017\n\"August\"\n35\n29\n2\n7\n2\n0\n0\n\"HB\"\n\"DEU\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"NULL\"\n0\n\"Transient\"\n151.2\n0\n2\n\"Check-Out\"\n\"2017-09-07\""
+  },
+  {
+    "objectID": "lectures/3c.html#select-a-range-of-variables",
+    "href": "lectures/3c.html#select-a-range-of-variables",
+    "title": "3C: Data Preparation",
+    "section": "select a range of variables",
+    "text": "select a range of variables\n\n(\n  hotels\n    .select(\n      pl.nth(range(hotels.get_column_index(\"hotel\"),\n                   hotels.get_column_index(\"arrival_date_month\")))\n    )\n)\n\n\nshape: (119_390, 4)\n\n\n\nhotel\nis_canceled\nlead_time\narrival_date_year\n\n\nstr\ni64\ni64\ni64\n\n\n\n\n\"Resort Hotel\"\n0\n342\n2015\n\n\n\"Resort Hotel\"\n0\n737\n2015\n\n\n\"Resort Hotel\"\n0\n7\n2015\n\n\n\"Resort Hotel\"\n0\n13\n2015\n\n\n\"Resort Hotel\"\n0\n14\n2015\n\n\n…\n…\n…\n…\n\n\n\"City Hotel\"\n0\n23\n2017\n\n\n\"City Hotel\"\n0\n102\n2017\n\n\n\"City Hotel\"\n0\n34\n2017\n\n\n\"City Hotel\"\n0\n109\n2017\n\n\n\"City Hotel\"\n0\n205\n2017"
+  },
+  {
+    "objectID": "lectures/3c.html#select-variables-with-certain-characteristics",
+    "href": "lectures/3c.html#select-variables-with-certain-characteristics",
+    "title": "3C: Data Preparation",
+    "section": "select variables with certain characteristics",
+    "text": "select variables with certain characteristics\n\n(\n  hotels\n    .select(pl.col(\"^arrival.*$\"))\n)\n\n\nshape: (119_390, 4)\n\n\n\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\n\n\ni64\nstr\ni64\ni64\n\n\n\n\n2015\n\"July\"\n27\n1\n\n\n2015\n\"July\"\n27\n1\n\n\n2015\n\"July\"\n27\n1\n\n\n2015\n\"July\"\n27\n1\n\n\n2015\n\"July\"\n27\n1\n\n\n…\n…\n…\n…\n\n\n2017\n\"August\"\n35\n30\n\n\n2017\n\"August\"\n35\n31\n\n\n2017\n\"August\"\n35\n31\n\n\n2017\n\"August\"\n35\n31\n\n\n2017\n\"August\"\n35\n29"
+  },
+  {
+    "objectID": "lectures/3c.html#select-variables-with-certain-characteristics-1",
+    "href": "lectures/3c.html#select-variables-with-certain-characteristics-1",
+    "title": "3C: Data Preparation",
+    "section": "select variables with certain characteristics",
+    "text": "select variables with certain characteristics\n\n(\n  hotels\n    .select(pl.col(\"^*.type$\"))\n)\n\n\nshape: (119_390, 4)\n\n\n\nreserved_room_type\nassigned_room_type\ndeposit_type\ncustomer_type\n\n\nstr\nstr\nstr\nstr\n\n\n\n\n\"C\"\n\"C\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"C\"\n\"C\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"A\"\n\"C\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"A\"\n\"A\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"A\"\n\"A\"\n\"No Deposit\"\n\"Transient\"\n\n\n…\n…\n…\n…\n\n\n\"A\"\n\"A\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"E\"\n\"E\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"D\"\n\"D\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"A\"\n\"A\"\n\"No Deposit\"\n\"Transient\"\n\n\n\"A\"\n\"A\"\n\"No Deposit\"\n\"Transient\""
+  },
+  {
+    "objectID": "lectures/3c.html#select-helpers",
+    "href": "lectures/3c.html#select-helpers",
+    "title": "3C: Data Preparation",
+    "section": "Select helpers",
+    "text": "Select helpers\n\nstarts_with(): Starts with a prefix\nends_with(): Ends with a suffix\ncontains(): Contains a literal string\nnum_range(): Matches a numerical range like x01, x02, x03\none_of(): Matches variable names in a character vector\neverything(): Matches all variables\nlast_col(): Select last variable, possibly with an offset\nmatches(): Matches a regular expression (a sequence of symbols/characters expressing a string/pattern to be searched for within text)\n\n\nSee help for any of these functions for more info, e.g. ?everything."
+  },
+  {
+    "objectID": "lectures/3c.html#sort-in-ascending-descending-order",
+    "href": "lectures/3c.html#sort-in-ascending-descending-order",
+    "title": "3C: Data Preparation",
+    "section": "sort in ascending / descending order",
+    "text": "sort in ascending / descending order\n\n\n\n(\n  hotels\n    .select([\"adults\", \"children\", \"babies\"])\n    .sort(\"babies\")\n)\n\n\nshape: (119_390, 3)\n\n\n\nadults\nchildren\nbabies\n\n\ni64\ni64\ni64\n\n\n\n\n2\n0\n0\n\n\n2\n0\n0\n\n\n1\n0\n0\n\n\n1\n0\n0\n\n\n2\n0\n0\n\n\n…\n…\n…\n\n\n2\n0\n2\n\n\n2\n0\n2\n\n\n2\n1\n2\n\n\n1\n0\n9\n\n\n2\n0\n10\n\n\n\n\n\n\n\n\n(\n  hotels\n    .select([\"adults\", \"children\", \"babies\"])\n    .sort(\"babies\", descending = True)\n)\n\n\nshape: (119_390, 3)\n\n\n\nadults\nchildren\nbabies\n\n\ni64\ni64\ni64\n\n\n\n\n2\n0\n10\n\n\n1\n0\n9\n\n\n2\n0\n2\n\n\n2\n0\n2\n\n\n2\n0\n2\n\n\n…\n…\n…\n\n\n2\n0\n0\n\n\n3\n0\n0\n\n\n2\n0\n0\n\n\n2\n0\n0\n\n\n2\n0\n0"
+  },
+  {
+    "objectID": "lectures/3c.html#slice-for-certain-row-numbers",
+    "href": "lectures/3c.html#slice-for-certain-row-numbers",
+    "title": "3C: Data Preparation",
+    "section": "slice for certain row numbers",
+    "text": "slice for certain row numbers\n\n\n(\n  hotels\n  .slice(0, 5)\n)\n\n\nshape: (5, 32)\n\n\n\nhotel\nis_canceled\nlead_time\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\nstays_in_weekend_nights\nstays_in_week_nights\nadults\nchildren\nbabies\nmeal\ncountry\nmarket_segment\ndistribution_channel\nis_repeated_guest\nprevious_cancellations\nprevious_bookings_not_canceled\nreserved_room_type\nassigned_room_type\nbooking_changes\ndeposit_type\nagent\ncompany\ndays_in_waiting_list\ncustomer_type\nadr\nrequired_car_parking_spaces\ntotal_of_special_requests\nreservation_status\nreservation_status_date\n\n\nstr\ni64\ni64\ni64\nstr\ni64\ni64\ni64\ni64\ni64\ni64\ni64\nstr\nstr\nstr\nstr\ni64\ni64\ni64\nstr\nstr\ni64\nstr\nstr\nstr\ni64\nstr\nf64\ni64\ni64\nstr\nstr\n\n\n\n\n\"Resort Hotel\"\n0\n342\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n3\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n737\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n4\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n7\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"A\"\n\"C\"\n0\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n13\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Corporate\"\n\"Corporate\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"304\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n14\n2015\n\"July\"\n27\n1\n0\n2\n2\n0\n0\n\"BB\"\n\"GBR\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"240\"\n\"NULL\"\n0\n\"Transient\"\n98.0\n0\n1\n\"Check-Out\"\n\"2015-07-03\"\n\n\n\n\n\n\n\n\nIn Python, you can use the # for adding comments to your code. Any text following # will be printed as is, and won’t be run as R code. This is useful for leaving comments in your code and for temporarily disabling certain lines of code while debugging.\n\n\n(\n  hotels\n  # slice the first five rows  # this line is a comment\n  # .select(\"hotel\")           # this one doesn't run\n  .slice(0, 5)                 # Selects the first 5 rows\n)\n\n\nshape: (5, 32)\n\n\n\nhotel\nis_canceled\nlead_time\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\nstays_in_weekend_nights\nstays_in_week_nights\nadults\nchildren\nbabies\nmeal\ncountry\nmarket_segment\ndistribution_channel\nis_repeated_guest\nprevious_cancellations\nprevious_bookings_not_canceled\nreserved_room_type\nassigned_room_type\nbooking_changes\ndeposit_type\nagent\ncompany\ndays_in_waiting_list\ncustomer_type\nadr\nrequired_car_parking_spaces\ntotal_of_special_requests\nreservation_status\nreservation_status_date\n\n\nstr\ni64\ni64\ni64\nstr\ni64\ni64\ni64\ni64\ni64\ni64\ni64\nstr\nstr\nstr\nstr\ni64\ni64\ni64\nstr\nstr\ni64\nstr\nstr\nstr\ni64\nstr\nf64\ni64\ni64\nstr\nstr\n\n\n\n\n\"Resort Hotel\"\n0\n342\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n3\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n737\n2015\n\"July\"\n27\n1\n0\n0\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"C\"\n\"C\"\n4\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-01\"\n\n\n\"Resort Hotel\"\n0\n7\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Direct\"\n\"Direct\"\n0\n0\n0\n\"A\"\n\"C\"\n0\n\"No Deposit\"\n\"NULL\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n13\n2015\n\"July\"\n27\n1\n0\n1\n1\n0\n0\n\"BB\"\n\"GBR\"\n\"Corporate\"\n\"Corporate\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"304\"\n\"NULL\"\n0\n\"Transient\"\n75.0\n0\n0\n\"Check-Out\"\n\"2015-07-02\"\n\n\n\"Resort Hotel\"\n0\n14\n2015\n\"July\"\n27\n1\n0\n2\n2\n0\n0\n\"BB\"\n\"GBR\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"240\"\n\"NULL\"\n0\n\"Transient\"\n98.0\n0\n1\n\"Check-Out\"\n\"2015-07-03\""
+  },
+  {
+    "objectID": "lectures/3c.html#filter-to-select-a-subset-of-rows",
+    "href": "lectures/3c.html#filter-to-select-a-subset-of-rows",
+    "title": "3C: Data Preparation",
+    "section": "filter to select a subset of rows",
+    "text": "filter to select a subset of rows\n\n# bookings in City Hotels\n(\n  hotels\n    .filter(pl.col(\"hotel\") == \"City Hotel\")\n)\n\n\nshape: (79_330, 32)\n\n\n\nhotel\nis_canceled\nlead_time\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\nstays_in_weekend_nights\nstays_in_week_nights\nadults\nchildren\nbabies\nmeal\ncountry\nmarket_segment\ndistribution_channel\nis_repeated_guest\nprevious_cancellations\nprevious_bookings_not_canceled\nreserved_room_type\nassigned_room_type\nbooking_changes\ndeposit_type\nagent\ncompany\ndays_in_waiting_list\ncustomer_type\nadr\nrequired_car_parking_spaces\ntotal_of_special_requests\nreservation_status\nreservation_status_date\n\n\nstr\ni64\ni64\ni64\nstr\ni64\ni64\ni64\ni64\ni64\ni64\ni64\nstr\nstr\nstr\nstr\ni64\ni64\ni64\nstr\nstr\ni64\nstr\nstr\nstr\ni64\nstr\nf64\ni64\ni64\nstr\nstr\n\n\n\n\n\"City Hotel\"\n0\n6\n2015\n\"July\"\n27\n1\n0\n2\n1\n0\n0\n\"HB\"\n\"PRT\"\n\"Offline TA/TO\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"6\"\n\"NULL\"\n0\n\"Transient\"\n0.0\n0\n0\n\"Check-Out\"\n\"2015-07-03\"\n\n\n\"City Hotel\"\n1\n88\n2015\n\"July\"\n27\n1\n0\n4\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n76.5\n0\n1\n\"Canceled\"\n\"2015-07-01\"\n\n\n\"City Hotel\"\n1\n65\n2015\n\"July\"\n27\n1\n0\n4\n1\n0\n0\n\"BB\"\n\"PRT\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n68.0\n0\n1\n\"Canceled\"\n\"2015-04-30\"\n\n\n\"City Hotel\"\n1\n92\n2015\n\"July\"\n27\n1\n2\n4\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n76.5\n0\n2\n\"Canceled\"\n\"2015-06-23\"\n\n\n\"City Hotel\"\n1\n100\n2015\n\"July\"\n27\n2\n0\n2\n2\n0\n0\n\"BB\"\n\"PRT\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n76.5\n0\n1\n\"Canceled\"\n\"2015-04-02\"\n\n\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n…\n\n\n\"City Hotel\"\n0\n23\n2017\n\"August\"\n35\n30\n2\n5\n2\n0\n0\n\"BB\"\n\"BEL\"\n\"Offline TA/TO\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"394\"\n\"NULL\"\n0\n\"Transient\"\n96.14\n0\n0\n\"Check-Out\"\n\"2017-09-06\"\n\n\n\"City Hotel\"\n0\n102\n2017\n\"August\"\n35\n31\n2\n5\n3\n0\n0\n\"BB\"\n\"FRA\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"E\"\n\"E\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n225.43\n0\n2\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n34\n2017\n\"August\"\n35\n31\n2\n5\n2\n0\n0\n\"BB\"\n\"DEU\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"D\"\n\"D\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n157.71\n0\n4\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n109\n2017\n\"August\"\n35\n31\n2\n5\n2\n0\n0\n\"BB\"\n\"GBR\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"89\"\n\"NULL\"\n0\n\"Transient\"\n104.4\n0\n0\n\"Check-Out\"\n\"2017-09-07\"\n\n\n\"City Hotel\"\n0\n205\n2017\n\"August\"\n35\n29\n2\n7\n2\n0\n0\n\"HB\"\n\"DEU\"\n\"Online TA\"\n\"TA/TO\"\n0\n0\n0\n\"A\"\n\"A\"\n0\n\"No Deposit\"\n\"9\"\n\"NULL\"\n0\n\"Transient\"\n151.2\n0\n2\n\"Check-Out\"\n\"2017-09-07\""
+  },
+  {
+    "objectID": "lectures/3c.html#filter-for-many-conditions-at-once",
+    "href": "lectures/3c.html#filter-for-many-conditions-at-once",
+    "title": "3C: Data Preparation",
+    "section": "filter for many conditions at once",
+    "text": "filter for many conditions at once\n\n(\n  hotels\n    .filter( \n      pl.col(\"adults\") == 0,     \n      pl.col(\"children\") &gt;= 1    \n    )  \n    .select([\"adults\", \"babies\", \"children\"])\n)\n\n\nshape: (223, 3)\n\n\n\nadults\nbabies\nchildren\n\n\ni64\ni64\ni64\n\n\n\n\n0\n0\n3\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n…\n…\n…\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n3"
+  },
+  {
+    "objectID": "lectures/3c.html#filter-for-more-complex-conditions",
+    "href": "lectures/3c.html#filter-for-more-complex-conditions",
+    "title": "3C: Data Preparation",
+    "section": "filter for more complex conditions",
+    "text": "filter for more complex conditions\n\n# bookings with no adults and some children or babies in the room\n(\n  hotels\n    .filter( \n      pl.col(\"adults\") == 0,     \n      (pl.col(\"children\") &gt;= 1) | (pl.col(\"babies\") &gt;=1)    \n    )  \n    .select([\"adults\", \"babies\", \"children\"])\n)\n\n\nshape: (223, 3)\n\n\n\nadults\nbabies\nchildren\n\n\ni64\ni64\ni64\n\n\n\n\n0\n0\n3\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n…\n…\n…\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n2\n\n\n0\n0\n3"
+  },
+  {
+    "objectID": "lectures/3c.html#logical-operators-in-python",
+    "href": "lectures/3c.html#logical-operators-in-python",
+    "title": "3C: Data Preparation",
+    "section": "Logical operators in Python",
+    "text": "Logical operators in Python\n\noperator | definition || operator | definition ————|——————————||————–|—————- &lt; | less than ||x | y | x OR y &lt;= | less than or equal to ||is.na(x) | test if x is NA &gt; | greater than ||!is.na(x) | test if x is not NA &gt;= | greater than or equal to ||x %in% y | test if x is in y == | exactly equal to ||!(x %in% y) | test if x is not in y != | not equal to ||!x | not x x & y | x AND y || |"
+  },
+  {
+    "objectID": "lectures/3c.html#unique-to-filter-for-unique-rows",
+    "href": "lectures/3c.html#unique-to-filter-for-unique-rows",
+    "title": "3C: Data Preparation",
+    "section": "unique to filter for unique rows",
+    "text": "unique to filter for unique rows\n… and sort to order alphabetically\n\n(\n  hotels\n    .unique(\"market_segment\")\n    .select(\"market_segment\")\n    .sort(\"market_segment\")\n)\n\n\nshape: (8, 1)\n\n\n\nmarket_segment\n\n\nstr\n\n\n\n\n\"Aviation\"\n\n\n\"Complementary\"\n\n\n\"Corporate\"\n\n\n\"Direct\"\n\n\n\"Groups\"\n\n\n\"Offline TA/TO\"\n\n\n\"Online TA\"\n\n\n\"Undefined\""
+  },
+  {
+    "objectID": "lectures/3c.html#with_columns-to-add-a-new-variable",
+    "href": "lectures/3c.html#with_columns-to-add-a-new-variable",
+    "title": "3C: Data Preparation",
+    "section": "with_columns to add a new variable",
+    "text": "with_columns to add a new variable\n\n(\n  hotels\n    .with_columns(\n      little_ones = pl.col(\"children\") + pl.col(\"babies\")\n    )\n    .select(\"children\", \"babies\", \"little_ones\")\n    .sort(\"little_ones\", descending = True)\n)\n\n\nshape: (119_390, 3)\n\n\n\nchildren\nbabies\nlittle_ones\n\n\ni64\ni64\ni64\n\n\n\n\nnull\n0\nnull\n\n\nnull\n0\nnull\n\n\nnull\n0\nnull\n\n\nnull\n0\nnull\n\n\n10\n0\n10\n\n\n…\n…\n…\n\n\n0\n0\n0\n\n\n0\n0\n0\n\n\n0\n0\n0\n\n\n0\n0\n0\n\n\n0\n0\n0"
+  },
+  {
+    "objectID": "lectures/3c.html#little-ones-in-resort-and-city-hotels",
+    "href": "lectures/3c.html#little-ones-in-resort-and-city-hotels",
+    "title": "3C: Data Preparation",
+    "section": "Little ones in resort and city hotels",
+    "text": "Little ones in resort and city hotels\n\n\n\n\n# Resort Hotel\n(\n  hotels\n    .with_columns(\n      little_ones = pl.col(\"children\") + pl.col(\"babies\")\n    )\n    .filter(\n      pl.col(\"little_ones\") &gt;= 1,\n      pl.col(\"hotel\") == \"Resort Hotel\"\n    )\n    .select(\"children\", \"babies\", \"little_ones\")\n)\n\n\nshape: (3_929, 3)\n\n\n\nchildren\nbabies\nlittle_ones\n\n\ni64\ni64\ni64\n\n\n\n\n1\n0\n1\n\n\n2\n0\n2\n\n\n2\n0\n2\n\n\n2\n0\n2\n\n\n1\n0\n1\n\n\n…\n…\n…\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n\n\n\n\n\n\n# City Hotel\n(\n  hotels\n    .with_columns(\n      little_ones = pl.col(\"children\") + pl.col(\"babies\")\n    )\n    .filter(\n      pl.col(\"little_ones\") &gt;= 1,\n      pl.col(\"hotel\") == \"City Hotel\"\n    )\n    .select(\"children\", \"babies\", \"little_ones\")\n)\n\n\nshape: (5_403, 3)\n\n\n\nchildren\nbabies\nlittle_ones\n\n\ni64\ni64\ni64\n\n\n\n\n0\n1\n1\n\n\n1\n0\n1\n\n\n2\n0\n2\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n…\n…\n…\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n2\n0\n2\n\n\n1\n0\n1\n\n\n2\n0\n2"
+  },
+  {
+    "objectID": "lectures/3c.html#summary-statistics-1",
+    "href": "lectures/3c.html#summary-statistics-1",
+    "title": "3C: Data Preparation",
+    "section": "Summary Statistics",
+    "text": "Summary Statistics\n\n# mean average daily rate for all bookings\n(\n  hotels\n    .select(pl.mean(\"adr\"))\n)\n\n\nshape: (1, 1)\n\n\n\nadr\n\n\nf64\n\n\n\n\n101.831122"
+  },
+  {
+    "objectID": "lectures/3c.html#multiple-summary-stats",
+    "href": "lectures/3c.html#multiple-summary-stats",
+    "title": "3C: Data Preparation",
+    "section": "Multiple Summary Stats",
+    "text": "Multiple Summary Stats\n\n(\n  hotels\n    .select(\"adr\")\n    .describe()\n)\n\n\nshape: (9, 2)\n\n\n\nstatistic\nadr\n\n\nstr\nf64\n\n\n\n\n\"count\"\n119390.0\n\n\n\"null_count\"\n0.0\n\n\n\"mean\"\n101.831122\n\n\n\"std\"\n50.53579\n\n\n\"min\"\n-6.38\n\n\n\"25%\"\n69.29\n\n\n\"50%\"\n94.59\n\n\n\"75%\"\n126.0\n\n\n\"max\"\n5400.0"
+  },
+  {
+    "objectID": "lectures/3c.html#summary-stats-for-df",
+    "href": "lectures/3c.html#summary-stats-for-df",
+    "title": "3C: Data Preparation",
+    "section": "Summary Stats for DF",
+    "text": "Summary Stats for DF\n\nhotels.describe()\n\n\nshape: (9, 33)\n\n\n\nstatistic\nhotel\nis_canceled\nlead_time\narrival_date_year\narrival_date_month\narrival_date_week_number\narrival_date_day_of_month\nstays_in_weekend_nights\nstays_in_week_nights\nadults\nchildren\nbabies\nmeal\ncountry\nmarket_segment\ndistribution_channel\nis_repeated_guest\nprevious_cancellations\nprevious_bookings_not_canceled\nreserved_room_type\nassigned_room_type\nbooking_changes\ndeposit_type\nagent\ncompany\ndays_in_waiting_list\ncustomer_type\nadr\nrequired_car_parking_spaces\ntotal_of_special_requests\nreservation_status\nreservation_status_date\n\n\nstr\nstr\nf64\nf64\nf64\nstr\nf64\nf64\nf64\nf64\nf64\nf64\nf64\nstr\nstr\nstr\nstr\nf64\nf64\nf64\nstr\nstr\nf64\nstr\nstr\nstr\nf64\nstr\nf64\nf64\nf64\nstr\nstr\n\n\n\n\n\"count\"\n\"119390\"\n119390.0\n119390.0\n119390.0\n\"119390\"\n119390.0\n119390.0\n119390.0\n119390.0\n119390.0\n119386.0\n119390.0\n\"119390\"\n\"119390\"\n\"119390\"\n\"119390\"\n119390.0\n119390.0\n119390.0\n\"119390\"\n\"119390\"\n119390.0\n\"119390\"\n\"119390\"\n\"119390\"\n119390.0\n\"119390\"\n119390.0\n119390.0\n119390.0\n\"119390\"\n\"119390\"\n\n\n\"null_count\"\n\"0\"\n0.0\n0.0\n0.0\n\"0\"\n0.0\n0.0\n0.0\n0.0\n0.0\n4.0\n0.0\n\"0\"\n\"0\"\n\"0\"\n\"0\"\n0.0\n0.0\n0.0\n\"0\"\n\"0\"\n0.0\n\"0\"\n\"0\"\n\"0\"\n0.0\n\"0\"\n0.0\n0.0\n0.0\n\"0\"\n\"0\"\n\n\n\"mean\"\nnull\n0.370416\n104.011416\n2016.156554\nnull\n27.165173\n15.798241\n0.927599\n2.500302\n1.856403\n0.10389\n0.007949\nnull\nnull\nnull\nnull\n0.031912\n0.087118\n0.137097\nnull\nnull\n0.221124\nnull\nnull\nnull\n2.321149\nnull\n101.831122\n0.062518\n0.571363\nnull\nnull\n\n\n\"std\"\nnull\n0.482918\n106.863097\n0.707476\nnull\n13.605138\n8.780829\n0.998613\n1.908286\n0.579261\n0.398561\n0.097436\nnull\nnull\nnull\nnull\n0.175767\n0.844336\n1.497437\nnull\nnull\n0.652306\nnull\nnull\nnull\n17.594721\nnull\n50.53579\n0.245291\n0.792798\nnull\nnull\n\n\n\"min\"\n\"City Hotel\"\n0.0\n0.0\n2015.0\n\"April\"\n1.0\n1.0\n0.0\n0.0\n0.0\n0.0\n0.0\n\"BB\"\n\"ABW\"\n\"Aviation\"\n\"Corporate\"\n0.0\n0.0\n0.0\n\"A\"\n\"A\"\n0.0\n\"No Deposit\"\n\"1\"\n\"10\"\n0.0\n\"Contract\"\n-6.38\n0.0\n0.0\n\"Canceled\"\n\"2014-10-17\"\n\n\n\"25%\"\nnull\n0.0\n18.0\n2016.0\nnull\n16.0\n8.0\n0.0\n1.0\n2.0\n0.0\n0.0\nnull\nnull\nnull\nnull\n0.0\n0.0\n0.0\nnull\nnull\n0.0\nnull\nnull\nnull\n0.0\nnull\n69.29\n0.0\n0.0\nnull\nnull\n\n\n\"50%\"\nnull\n0.0\n69.0\n2016.0\nnull\n28.0\n16.0\n1.0\n2.0\n2.0\n0.0\n0.0\nnull\nnull\nnull\nnull\n0.0\n0.0\n0.0\nnull\nnull\n0.0\nnull\nnull\nnull\n0.0\nnull\n94.59\n0.0\n0.0\nnull\nnull\n\n\n\"75%\"\nnull\n1.0\n160.0\n2017.0\nnull\n38.0\n23.0\n2.0\n3.0\n2.0\n0.0\n0.0\nnull\nnull\nnull\nnull\n0.0\n0.0\n0.0\nnull\nnull\n0.0\nnull\nnull\nnull\n0.0\nnull\n126.0\n0.0\n1.0\nnull\nnull\n\n\n\"max\"\n\"Resort Hotel\"\n1.0\n737.0\n2017.0\n\"September\"\n53.0\n31.0\n19.0\n50.0\n55.0\n10.0\n10.0\n\"Undefined\"\n\"ZWE\"\n\"Undefined\"\n\"Undefined\"\n1.0\n26.0\n72.0\n\"P\"\n\"P\"\n21.0\n\"Refundable\"\n\"NULL\"\n\"NULL\"\n391.0\n\"Transient-Party\"\n5400.0\n8.0\n5.0\n\"No-Show\"\n\"2017-09-14\""
+  },
+  {
+    "objectID": "lectures/3c.html#group_by-for-grouped-operations",
+    "href": "lectures/3c.html#group_by-for-grouped-operations",
+    "title": "3C: Data Preparation",
+    "section": "group_by for grouped operations",
+    "text": "group_by for grouped operations\n\n# mean average daily rate for all booking at city and resort hotels\n(\n  hotels\n    .group_by(\"hotel\")\n)\n\n&lt;polars.dataframe.group_by.GroupBy at 0x7fa479621160&gt;"
+  },
+  {
+    "objectID": "lectures/3c.html#agg-for-summary-stats",
+    "href": "lectures/3c.html#agg-for-summary-stats",
+    "title": "3C: Data Preparation",
+    "section": "agg for summary stats",
+    "text": "agg for summary stats\n( hotels .group_by(“hotel”) .agg(mean_adr = pl.mean(“adr”), median_adr = pl.median(“adr”) ) )\n\n(\n  hotels\n    .group_by(\"hotel\")\n    .agg(mean_adr = pl.mean(\"adr\"))\n)\n\n\nshape: (2, 2)\n\n\n\nhotel\nmean_adr\n\n\nstr\nf64\n\n\n\n\n\"Resort Hotel\"\n94.95293\n\n\n\"City Hotel\"\n105.304465"
+  },
+  {
+    "objectID": "lectures/3c.html#agg-for-multi-summary-stats",
+    "href": "lectures/3c.html#agg-for-multi-summary-stats",
+    "title": "3C: Data Preparation",
+    "section": "agg for multi summary stats",
+    "text": "agg for multi summary stats\n\n(\n  hotels\n    .group_by(\"hotel\")\n    .agg(mean_adr = pl.mean(\"adr\"),\n         median_adr = pl.median(\"adr\")\n    )\n)\n\n\nshape: (2, 3)\n\n\n\nhotel\nmean_adr\nmedian_adr\n\n\nstr\nf64\nf64\n\n\n\n\n\"City Hotel\"\n105.304465\n99.9\n\n\n\"Resort Hotel\"\n94.95293\n75.0"
+  },
+  {
+    "objectID": "lectures/3c.html#agg-for-correlation",
+    "href": "lectures/3c.html#agg-for-correlation",
+    "title": "3C: Data Preparation",
+    "section": "agg for correlation",
+    "text": "agg for correlation\n\n(\n  hotels\n    .group_by(\"hotel\")\n    .agg(mean_adr = pl.mean(\"adr\"),\n         median_adr = pl.median(\"adr\"),\n         corr_child_babies = pl.corr(\"children\", \"babies\")\n    )\n)\n\n\nshape: (2, 4)\n\n\n\nhotel\nmean_adr\nmedian_adr\ncorr_child_babies\n\n\nstr\nf64\nf64\nf64\n\n\n\n\n\"Resort Hotel\"\n94.95293\n75.0\n0.020415\n\n\n\"City Hotel\"\n105.304465\n99.9\n0.023773"
+  },
+  {
+    "objectID": "lectures/3c.html#calculating-frequencies",
+    "href": "lectures/3c.html#calculating-frequencies",
+    "title": "3C: Data Preparation",
+    "section": "Calculating Frequencies",
+    "text": "Calculating Frequencies\n\n(\n  hotels\n    .select(\"market_segment\")\n    .group_by(\"market_segment\")\n    .agg(count = pl.len())\n)\n\n\nshape: (8, 2)\n\n\n\nmarket_segment\ncount\n\n\nstr\nu32\n\n\n\n\n\"Corporate\"\n5295\n\n\n\"Undefined\"\n2\n\n\n\"Complementary\"\n743\n\n\n\"Direct\"\n12606\n\n\n\"Aviation\"\n237\n\n\n\"Online TA\"\n56477\n\n\n\"Groups\"\n19811\n\n\n\"Offline TA/TO\"\n24219"
+  },
+  {
+    "objectID": "lectures/3c.html#calculating-frequencies-for-multiple-variables",
+    "href": "lectures/3c.html#calculating-frequencies-for-multiple-variables",
+    "title": "3C: Data Preparation",
+    "section": "Calculating Frequencies for multiple variables",
+    "text": "Calculating Frequencies for multiple variables\n\n(\n  hotels\n    .select(\"hotel\", \"market_segment\")\n    .group_by(\"hotel\", \"market_segment\")\n    .agg(count = pl.len())\n)\n\n\nshape: (14, 3)\n\n\n\nhotel\nmarket_segment\ncount\n\n\nstr\nstr\nu32\n\n\n\n\n\"City Hotel\"\n\"Direct\"\n6093\n\n\n\"Resort Hotel\"\n\"Corporate\"\n2309\n\n\n\"Resort Hotel\"\n\"Online TA\"\n17729\n\n\n\"City Hotel\"\n\"Undefined\"\n2\n\n\n\"City Hotel\"\n\"Corporate\"\n2986\n\n\n…\n…\n…\n\n\n\"Resort Hotel\"\n\"Offline TA/TO\"\n7472\n\n\n\"City Hotel\"\n\"Online TA\"\n38748\n\n\n\"Resort Hotel\"\n\"Complementary\"\n201\n\n\n\"Resort Hotel\"\n\"Groups\"\n5836\n\n\n\"City Hotel\"\n\"Aviation\"\n237"
+  },
+  {
+    "objectID": "lectures/3c.html#order-matters-when-you-len",
+    "href": "lectures/3c.html#order-matters-when-you-len",
+    "title": "3C: Data Preparation",
+    "section": "order matters when you len",
+    "text": "order matters when you len\n\n\n\n\n# hotel type first\n(\n  hotels\n    .select(\"hotel\", \"market_segment\")\n    .group_by(\"hotel\", \"market_segment\")\n    .agg(count = pl.len())\n)\n\n\nshape: (14, 3)\n\n\n\nhotel\nmarket_segment\ncount\n\n\nstr\nstr\nu32\n\n\n\n\n\"City Hotel\"\n\"Online TA\"\n38748\n\n\n\"City Hotel\"\n\"Undefined\"\n2\n\n\n\"City Hotel\"\n\"Complementary\"\n542\n\n\n\"Resort Hotel\"\n\"Groups\"\n5836\n\n\n\"Resort Hotel\"\n\"Direct\"\n6513\n\n\n…\n…\n…\n\n\n\"Resort Hotel\"\n\"Offline TA/TO\"\n7472\n\n\n\"Resort Hotel\"\n\"Online TA\"\n17729\n\n\n\"City Hotel\"\n\"Corporate\"\n2986\n\n\n\"Resort Hotel\"\n\"Corporate\"\n2309\n\n\n\"City Hotel\"\n\"Direct\"\n6093\n\n\n\n\n\n\n\n\n# market segment first\n(\n  hotels\n    .select(\"market_segment\", \"hotel\")\n    .group_by(\"market_segment\", \"hotel\")\n    .agg(count = pl.len())\n)\n\n\nshape: (14, 3)\n\n\n\nmarket_segment\nhotel\ncount\n\n\nstr\nstr\nu32\n\n\n\n\n\"Offline TA/TO\"\n\"City Hotel\"\n16747\n\n\n\"Complementary\"\n\"Resort Hotel\"\n201\n\n\n\"Online TA\"\n\"Resort Hotel\"\n17729\n\n\n\"Offline TA/TO\"\n\"Resort Hotel\"\n7472\n\n\n\"Corporate\"\n\"Resort Hotel\"\n2309\n\n\n…\n…\n…\n\n\n\"Groups\"\n\"City Hotel\"\n13975\n\n\n\"Groups\"\n\"Resort Hotel\"\n5836\n\n\n\"Complementary\"\n\"City Hotel\"\n542\n\n\n\"Direct\"\n\"Resort Hotel\"\n6513\n\n\n\"Corporate\"\n\"City Hotel\"\n2986"
+  },
+  {
+    "objectID": "lectures/3c.html#section",
+    "href": "lectures/3c.html#section",
+    "title": "3C: Data Preparation",
+    "section": "",
+    "text": "What is happening in the following chunk?\n\n\n\n(\n  hotels\n    .with_columns(\n      little_ones = pl.col(\"children\") + pl.col(\"babies\")\n    )\n    .filter(\n      pl.col(\"little_ones\") &gt;= 1,\n      pl.col(\"hotel\") == \"City Hotel\"\n    )\n    .select(\"children\", \"babies\", \"little_ones\")\n)\n\n#hotels %&gt;%\n#  mutate(little_ones = children + babies) %&gt;%\n#  count(hotel, little_ones) %&gt;%\n#  mutate(prop = n / sum(n))\n\n\nshape: (5_403, 3)\n\n\n\nchildren\nbabies\nlittle_ones\n\n\ni64\ni64\ni64\n\n\n\n\n0\n1\n1\n\n\n1\n0\n1\n\n\n2\n0\n2\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n…\n…\n…\n\n\n1\n0\n1\n\n\n1\n0\n1\n\n\n2\n0\n2\n\n\n1\n0\n1\n\n\n2\n0\n2"
+  },
+  {
+    "objectID": "lectures/3a.html#modules-and-data",
+    "href": "lectures/3a.html#modules-and-data",
+    "title": "3A: Data Preparation",
+    "section": "Modules and Data",
+    "text": "Modules and Data\n\nimport polars as pl\n\nstarwars = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/dplyr/refs/heads/main/data-raw/starwars.csv\",\n                       null_values = [\"NA\"]\n                       )"
+  },
+  {
+    "objectID": "lectures/3a.html#tidy-data",
+    "href": "lectures/3a.html#tidy-data",
+    "title": "3A: Data Preparation",
+    "section": "Tidy data",
+    "text": "Tidy data\n\nHappy families are all alike; every unhappy family is unhappy in its own way.\nLeo Tolstoy\n\n\n\n\nCharacteristics of tidy data:\n\nEach variable forms a column.\nEach observation forms a row.\nEach type of observational unit forms a table.\n\n\nCharacteristics of untidy data:\n!@#$%^&*()"
+  },
+  {
+    "objectID": "lectures/3a.html#section",
+    "href": "lectures/3a.html#section",
+    "title": "3A: Data Preparation",
+    "section": "",
+    "text": "What makes this data not tidy?\n\n\n\nSource: Army Air Forces Statistical Digest, WW II"
+  },
+  {
+    "objectID": "lectures/3a.html#section-1",
+    "href": "lectures/3a.html#section-1",
+    "title": "3A: Data Preparation",
+    "section": "",
+    "text": "What makes this data not tidy?\n\n\n\nSource: Gapminder, Estimated HIV prevalence among 15-49 year olds"
+  },
+  {
+    "objectID": "lectures/3a.html#section-2",
+    "href": "lectures/3a.html#section-2",
+    "title": "3A: Data Preparation",
+    "section": "",
+    "text": "What makes this data not tidy?\n\n\n\nSource: US Census Fact Finder, General Economic Characteristics, ACS 2017"
+  },
+  {
+    "objectID": "lectures/3a.html#displaying-vs.-summarising-data",
+    "href": "lectures/3a.html#displaying-vs.-summarising-data",
+    "title": "3A: Data Preparation",
+    "section": "Displaying vs. summarising data",
+    "text": "Displaying vs. summarising data\n\nOutputCode\n\n\n\n\n\n\n\nshape: (87, 3)\n\n\n\nname\nheight\nmass\n\n\nstr\ni64\nf64\n\n\n\n\n\"Luke Skywalker\"\n172\n77.0\n\n\n\"C-3PO\"\n167\n75.0\n\n\n\"R2-D2\"\n96\n32.0\n\n\n\"Darth Vader\"\n202\n136.0\n\n\n\"Leia Organa\"\n150\n49.0\n\n\n…\n…\n…\n\n\n\"Finn\"\nnull\nnull\n\n\n\"Rey\"\nnull\nnull\n\n\n\"Poe Dameron\"\nnull\nnull\n\n\n\"BB8\"\nnull\nnull\n\n\n\"Captain Phasma\"\nnull\nnull\n\n\n\n\n\n\n\n\n\n\nshape: (3, 2)\n\n\n\ngender\navg_ht\n\n\nstr\nf64\n\n\n\n\nnull\n175.0\n\n\n\"masculine\"\n176.532258\n\n\n\"feminine\"\n166.533333\n\n\n\n\n\n\n\n\n\n\n\n\n(\n    starwars \n        .select(\n            pl.col(\"name\"),\n            pl.col(\"height\"),\n            pl.col(\"mass\")\n        )\n)\n\n\n\n(\n    starwars\n        .group_by(\"gender\")\n        .agg(avg_ht = pl.mean(\"height\"))\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#number-of-variables-involved",
+    "href": "lectures/2c.html#number-of-variables-involved",
+    "title": "2C: Data Visualisation",
+    "section": "Number of variables involved",
+    "text": "Number of variables involved\n\nUnivariate data analysis - distribution of single variable\nBivariate data analysis - relationship between two variables\nMultivariate data analysis - relationship between many variables at once, usually focusing on the relationship between two while conditioning for others"
+  },
+  {
+    "objectID": "lectures/2c.html#types-of-variables",
+    "href": "lectures/2c.html#types-of-variables",
+    "title": "2C: Data Visualisation",
+    "section": "Types of variables",
+    "text": "Types of variables\n\nNumerical variables can be classified as continuous or discrete based on whether or not the variable can take on an infinite number of values or only non-negative whole numbers, respectively.\nIf the variable is categorical, we can determine if it is ordinal based on whether or not the levels have a natural ordering."
+  },
+  {
+    "objectID": "lectures/2c.html#data-lending-club",
+    "href": "lectures/2c.html#data-lending-club",
+    "title": "2C: Data Visualisation",
+    "section": "Data: Lending Club",
+    "text": "Data: Lending Club\n\n\n\nThousands of loans made through the Lending Club, which is a platform that allows individuals to lend to other individuals\nNot all loans are created equal – ease of getting a loan depends on (apparent) ability to pay back the loan\nData includes loans made, these are not loan applications"
+  },
+  {
+    "objectID": "lectures/2c.html#take-a-peek-at-data",
+    "href": "lectures/2c.html#take-a-peek-at-data",
+    "title": "2C: Data Visualisation",
+    "section": "Take a peek at data",
+    "text": "Take a peek at data\n\nloan_full_schema.glimpse()\n\nRows: 10000\nColumns: 55\n$ emp_title                        &lt;str&gt; 'global config engineer ', 'warehouse office clerk', 'assembly', 'customer service', 'security supervisor ', None, 'hr ', 'police', 'parts', '4th person'\n$ emp_length                       &lt;i64&gt; 3, 10, 3, 1, 10, None, 10, 10, 10, 3\n$ state                            &lt;str&gt; 'NJ', 'HI', 'WI', 'PA', 'CA', 'KY', 'MI', 'AZ', 'NV', 'IL'\n$ homeownership                    &lt;str&gt; 'MORTGAGE', 'RENT', 'RENT', 'RENT', 'RENT', 'OWN', 'MORTGAGE', 'MORTGAGE', 'MORTGAGE', 'RENT'\n$ annual_income                    &lt;f64&gt; 90000.0, 40000.0, 40000.0, 30000.0, 35000.0, 34000.0, 35000.0, 110000.0, 65000.0, 30000.0\n$ verified_income                  &lt;str&gt; 'Verified', 'Not Verified', 'Source Verified', 'Not Verified', 'Verified', 'Not Verified', 'Source Verified', 'Source Verified', 'Source Verified', 'Not Verified'\n$ debt_to_income                   &lt;f64&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, 23.66, 16.19, 36.48, 18.91\n$ annual_income_joint              &lt;f64&gt; None, None, None, None, 57000.0, None, 155000.0, None, None, None\n$ verification_income_joint        &lt;str&gt; None, None, None, None, 'Verified', None, 'Not Verified', None, None, None\n$ debt_to_income_joint             &lt;f64&gt; None, None, None, None, 37.66, None, 13.12, None, None, None\n$ delinq_2y                        &lt;i64&gt; 0, 0, 0, 0, 0, 1, 0, 1, 1, 0\n$ months_since_last_delinq         &lt;i64&gt; 38, None, 28, None, None, 3, None, 19, 18, None\n$ earliest_credit_line             &lt;i64&gt; 2001, 1996, 2006, 2007, 2008, 1990, 2004, 2005, 1998, 2001\n$ inquiries_last_12m               &lt;i64&gt; 6, 1, 4, 0, 7, 6, 1, 1, 3, 0\n$ total_credit_lines               &lt;i64&gt; 28, 30, 31, 4, 22, 32, 12, 30, 35, 9\n$ open_credit_lines                &lt;i64&gt; 10, 14, 10, 4, 16, 12, 10, 15, 21, 6\n$ total_credit_limit               &lt;i64&gt; 70795, 28800, 24193, 25400, 69839, 42100, 291852, 342336, 283190, 33114\n$ total_credit_utilized            &lt;i64&gt; 38767, 4321, 16000, 4997, 52722, 3898, 18916, 60805, 69561, 17768\n$ num_collections_last_12m         &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ num_historical_failed_to_pay     &lt;i64&gt; 0, 1, 0, 1, 0, 0, 0, 0, 0, 0\n$ months_since_90d_late            &lt;i64&gt; 38, None, 28, None, None, 60, None, 71, 18, None\n$ current_accounts_delinq          &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ total_collection_amount_ever     &lt;i64&gt; 1250, 0, 432, 0, 0, 0, 0, 0, 0, 0\n$ current_installment_accounts     &lt;i64&gt; 2, 0, 1, 1, 1, 0, 2, 2, 6, 1\n$ accounts_opened_24m              &lt;i64&gt; 5, 11, 13, 1, 6, 2, 1, 4, 10, 5\n$ months_since_last_credit_inquiry &lt;i64&gt; 5, 8, 7, 15, 4, 5, 9, 7, 4, 17\n$ num_satisfactory_accounts        &lt;i64&gt; 10, 14, 10, 4, 16, 12, 10, 15, 21, 6\n$ num_accounts_120d_past_due       &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, None, 0, 0\n$ num_accounts_30d_past_due        &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ num_active_debit_accounts        &lt;i64&gt; 2, 3, 3, 2, 10, 1, 3, 5, 11, 3\n$ total_debit_limit                &lt;i64&gt; 11100, 16500, 4300, 19400, 32700, 27200, 9100, 22250, 36700, 14700\n$ num_total_cc_accounts            &lt;i64&gt; 14, 24, 14, 3, 20, 27, 8, 16, 19, 7\n$ num_open_cc_accounts             &lt;i64&gt; 8, 14, 8, 3, 15, 12, 7, 12, 14, 5\n$ num_cc_carrying_balance          &lt;i64&gt; 6, 4, 6, 2, 13, 5, 6, 10, 14, 3\n$ num_mort_accounts                &lt;i64&gt; 1, 0, 0, 0, 0, 3, 2, 7, 2, 0\n$ account_never_delinq_percent     &lt;f64&gt; 92.9, 100.0, 93.5, 100.0, 100.0, 78.1, 100.0, 93.0, 97.1, 100.0\n$ tax_liens                        &lt;i64&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0\n$ public_record_bankrupt           &lt;i64&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0\n$ loan_purpose                     &lt;str&gt; 'moving', 'debt_consolidation', 'other', 'debt_consolidation', 'credit_card', 'other', 'credit_card', 'debt_consolidation', 'home_improvement', 'credit_card'\n$ application_type                 &lt;str&gt; 'individual', 'individual', 'individual', 'individual', 'joint', 'individual', 'joint', 'individual', 'individual', 'individual'\n$ loan_amount                      &lt;i64&gt; 28000, 5000, 2000, 21600, 23000, 5000, 24000, 20000, 20000, 6400\n$ term                             &lt;i64&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36\n$ interest_rate                    &lt;f64&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, 13.59, 11.99, 13.59, 6.71\n$ installment                      &lt;f64&gt; 652.53, 167.54, 71.4, 664.19, 786.87, 153.75, 553.35, 444.79, 679.58, 196.77\n$ grade                            &lt;str&gt; 'C', 'C', 'D', 'A', 'C', 'A', 'C', 'B', 'C', 'A'\n$ sub_grade                        &lt;str&gt; 'C3', 'C1', 'D1', 'A3', 'C3', 'A3', 'C2', 'B5', 'C2', 'A3'\n$ issue_month                      &lt;str&gt; 'Mar-2018', 'Feb-2018', 'Feb-2018', 'Jan-2018', 'Mar-2018', 'Jan-2018', 'Jan-2018', 'Jan-2018', 'Feb-2018', 'Mar-2018'\n$ loan_status                      &lt;str&gt; 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current'\n$ initial_listing_status           &lt;str&gt; 'whole', 'whole', 'fractional', 'whole', 'whole', 'whole', 'whole', 'whole', 'whole', 'fractional'\n$ disbursement_method              &lt;str&gt; 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash'\n$ balance                          &lt;f64&gt; 27015.86, 4651.37, 1824.63, 18853.26, 21430.15, 4256.71, 22560.0, 19005.39, 18156.66, 6077.13\n$ paid_total                       &lt;f64&gt; 1999.33, 499.12, 281.8, 3312.89, 2324.65, 873.13, 2730.51, 1765.84, 2703.22, 391.15\n$ paid_principal                   &lt;f64&gt; 984.14, 348.63, 175.37, 2746.74, 1569.85, 743.29, 1440.0, 994.61, 1843.34, 322.87\n$ paid_interest                    &lt;f64&gt; 1015.19, 150.49, 106.43, 566.15, 754.8, 129.84, 1290.51, 771.23, 859.88, 68.28\n$ paid_late_fees                   &lt;f64&gt; 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0"
+  },
+  {
+    "objectID": "lectures/2c.html#selected-variables",
+    "href": "lectures/2c.html#selected-variables",
+    "title": "2C: Data Visualisation",
+    "section": "Selected variables",
+    "text": "Selected variables\n\nloans = (\n    loan_full_schema\n        .select(pl.col(\"loan_amount\"), \n                pl.col(\"interest_rate\"), \n                pl.col(\"term\"), \n                pl.col(\"grade\"),\n                pl.col(\"state\"), \n                pl.col(\"annual_income\"), \n                pl.col(\"homeownership\"), \n                pl.col(\"debt_to_income\"))\n\n)\nloans.glimpse()\n\nRows: 10000\nColumns: 8\n$ loan_amount    &lt;i64&gt; 28000, 5000, 2000, 21600, 23000, 5000, 24000, 20000, 20000, 6400\n$ interest_rate  &lt;f64&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, 13.59, 11.99, 13.59, 6.71\n$ term           &lt;i64&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36\n$ grade          &lt;str&gt; 'C', 'C', 'D', 'A', 'C', 'A', 'C', 'B', 'C', 'A'\n$ state          &lt;str&gt; 'NJ', 'HI', 'WI', 'PA', 'CA', 'KY', 'MI', 'AZ', 'NV', 'IL'\n$ annual_income  &lt;f64&gt; 90000.0, 40000.0, 40000.0, 30000.0, 35000.0, 34000.0, 35000.0, 110000.0, 65000.0, 30000.0\n$ homeownership  &lt;str&gt; 'MORTGAGE', 'RENT', 'RENT', 'RENT', 'RENT', 'OWN', 'MORTGAGE', 'MORTGAGE', 'MORTGAGE', 'RENT'\n$ debt_to_income &lt;f64&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, 23.66, 16.19, 36.48, 18.91"
+  },
+  {
+    "objectID": "lectures/2c.html#selected-variables-1",
+    "href": "lectures/2c.html#selected-variables-1",
+    "title": "2C: Data Visualisation",
+    "section": "Selected variables",
+    "text": "Selected variables\n\n\n\n\n\n\n\nvariable\ndescription\n\n\n\n\nloan_amount\nAmount of the loan received, in US dollars\n\n\ninterest_rate\nInterest rate on the loan, in an annual percentage\n\n\nterm\nThe length of the loan, which is always set as a whole number of months\n\n\ngrade\nLoan grade, which takes a values A through G and represents the quality of the loan and its likelihood of being repaid\n\n\nstate\nUS state where the borrower resides\n\n\nannual_income\nBorrower’s annual income, including any second income, in US dollars\n\n\nhomeownership\nIndicates whether the person owns, owns but has a mortgage, or rents\n\n\ndebt_to_income\nDebt-to-income ratio"
+  },
+  {
+    "objectID": "lectures/2c.html#variable-types",
+    "href": "lectures/2c.html#variable-types",
+    "title": "2C: Data Visualisation",
+    "section": "Variable types",
+    "text": "Variable types\n\n\n\nvariable\ntype\n\n\n\n\nloan_amount\nnumerical, continuous\n\n\ninterest_rate\nnumerical, continuous\n\n\nterm\nnumerical, discrete\n\n\ngrade\ncategorical, ordinal\n\n\nstate\ncategorical, not ordinal\n\n\nannual_income\nnumerical, continuous\n\n\nhomeownership\ncategorical, not ordinal\n\n\ndebt_to_income\nnumerical, continuous"
+  },
+  {
+    "objectID": "lectures/2c.html#describing-shapes-of-numerical-distributions",
+    "href": "lectures/2c.html#describing-shapes-of-numerical-distributions",
+    "title": "2C: Data Visualisation",
+    "section": "Describing shapes of numerical distributions",
+    "text": "Describing shapes of numerical distributions\n\nshape:\n\nskewness: right-skewed, left-skewed, symmetric (skew is to the side of the longer tail)\nmodality: unimodal, bimodal, multimodal, uniform\n\ncenter: mean (mean), median (median), mode (not always useful)\nspread: range (range), standard deviation (sd), inter-quartile range (IQR)\nunusual observations"
+  },
+  {
+    "objectID": "lectures/2c.html#histogram-1",
+    "href": "lectures/2c.html#histogram-1",
+    "title": "2C: Data Visualisation",
+    "section": "Histogram",
+    "text": "Histogram\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_histogram()\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#histograms-and-binwidth",
+    "href": "lectures/2c.html#histograms-and-binwidth",
+    "title": "2C: Data Visualisation",
+    "section": "Histograms and binwidth",
+    "text": "Histograms and binwidth\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_histogram(binwidth = 1000)\n)\n\n\n\n\n\n\n\n\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_histogram(binwidth = 5000)\n)\n\n\n\n\n\n\n\n\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\")) \n  + geom_histogram(binwidth = 20000)\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#customizing-histograms",
+    "href": "lectures/2c.html#customizing-histograms",
+    "title": "2C: Data Visualisation",
+    "section": "Customizing histograms",
+    "text": "Customizing histograms\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_histogram(binwidth = 5000)\n  + labs(\n    x = \"Loan amount ($)\",\n    y = \"Frequency\",\n    title = \"Amounts of Lending Club loans\" \n  )\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#fill-with-a-categorical-variable",
+    "href": "lectures/2c.html#fill-with-a-categorical-variable",
+    "title": "2C: Data Visualisation",
+    "section": "Fill with a categorical variable",
+    "text": "Fill with a categorical variable\n\n(\nggplot(loans, aes(x = \"loan_amount\", \n                  fill = \"homeownership\"))\n  + geom_histogram(binwidth = 5000,\n                 alpha = 0.5)\n  + labs(\n    x = \"Loan amount ($)\",\n    y = \"Frequency\",\n    title = \"Amounts of Lending Club loans\"\n  )\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#facet-with-a-categorical-variable",
+    "href": "lectures/2c.html#facet-with-a-categorical-variable",
+    "title": "2C: Data Visualisation",
+    "section": "Facet with a categorical variable",
+    "text": "Facet with a categorical variable\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\", \n                              fill = \"homeownership\")) \n  + geom_histogram(binwidth = 5000)\n  + labs(\n    x = \"Loan amount ($)\",\n    y = \"Frequency\",\n    title = \"Amounts of Lending Club loans\"\n  ) \n  + facet_wrap(\"homeownership\", nrow = 3)\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#density-plot-1",
+    "href": "lectures/2c.html#density-plot-1",
+    "title": "2C: Data Visualisation",
+    "section": "Density plot",
+    "text": "Density plot\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\")) \n  + geom_density()\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#density-plots-and-adjusting-bandwidth",
+    "href": "lectures/2c.html#density-plots-and-adjusting-bandwidth",
+    "title": "2C: Data Visualisation",
+    "section": "Density plots and adjusting bandwidth",
+    "text": "Density plots and adjusting bandwidth\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_density(adjust = 0.5)\n)\n\n\n\n\n\n\n\n\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\")) \n  + geom_density(adjust = 1) # default bandwidth\n)\n\n\n\n\n\n\n\n\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\")) \n  + geom_density(adjust = 2)\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#customizing-density-plots",
+    "href": "lectures/2c.html#customizing-density-plots",
+    "title": "2C: Data Visualisation",
+    "section": "Customizing density plots",
+    "text": "Customizing density plots\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\"))\n  + geom_density(adjust = 2)\n  + labs( \n    x = \"Loan amount ($)\",\n    y = \"Density\",\n    title = \"Amounts of Lending Club loans\"\n   )\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#adding-a-categorical-variable",
+    "href": "lectures/2c.html#adding-a-categorical-variable",
+    "title": "2C: Data Visualisation",
+    "section": "Adding a categorical variable",
+    "text": "Adding a categorical variable\n\n(\nggplot(loans.to_pandas(), aes(x = \"loan_amount\", \n                  fill = \"homeownership\"))\n  + geom_density(adjust = 2, \n                alpha = 0.5)\n  + labs(\n      x = \"Loan amount ($)\",\n      y = \"Density\",\n      title = \"Amounts of Lending Club loans\", \n      fill = \"Homeownership\"\n    )\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#box-plot-1",
+    "href": "lectures/2c.html#box-plot-1",
+    "title": "2C: Data Visualisation",
+    "section": "Box plot",
+    "text": "Box plot\n\n(\nggplot(loans.to_pandas(), aes(x = \"grade\",\n                              y = \"interest_rate\"))\n  + geom_boxplot()\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#customizing-box-plots",
+    "href": "lectures/2c.html#customizing-box-plots",
+    "title": "2C: Data Visualisation",
+    "section": "Customizing box plots",
+    "text": "Customizing box plots\n\n(\nggplot(loans.to_pandas(), aes(x = \"grade\",\n                              y = \"interest_rate\"))\n  + geom_boxplot()\n  + labs(\n    y = \"Interest rate (%)\",\n    title = \"Interest rates of Lending Club loans\"\n    )\n)"
+  },
+  {
+    "objectID": "lectures/2c.html#scatterplot",
+    "href": "lectures/2c.html#scatterplot",
+    "title": "2C: Data Visualisation",
+    "section": "Scatterplot",
+    "text": "Scatterplot\n\n(\nggplot(loans.to_pandas(), aes(x = \"debt_to_income\", \n                              y = \"interest_rate\"))\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2a.html#dataset-terminology",
+    "href": "lectures/2a.html#dataset-terminology",
+    "title": "2A: Data and Visualisation",
+    "section": "Dataset terminology",
+    "text": "Dataset terminology\n\nEach row is an observation\nEach column is a variable\n\n\nstarwars[\"height\"]\n\n\nshape: (87,)\n\n\n\nheight\n\n\ni64\n\n\n\n\n172\n\n\n167\n\n\n96\n\n\n202\n\n\n150\n\n\n…\n\n\nnull\n\n\nnull\n\n\nnull\n\n\nnull\n\n\nnull"
+  },
+  {
+    "objectID": "lectures/2a.html#luke-skywalker",
+    "href": "lectures/2a.html#luke-skywalker",
+    "title": "2A: Data and Visualisation",
+    "section": "Luke Skywalker",
+    "text": "Luke Skywalker"
+  },
+  {
+    "objectID": "lectures/2a.html#whats-in-the-star-wars-data",
+    "href": "lectures/2a.html#whats-in-the-star-wars-data",
+    "title": "2A: Data and Visualisation",
+    "section": "What’s in the Star Wars data?",
+    "text": "What’s in the Star Wars data?\nTake a glimpse at the data:\n\nstarwars.glimpse()\n\nRows: 87\nColumns: 14\n$ name       &lt;str&gt; 'Luke Skywalker', 'C-3PO', 'R2-D2', 'Darth Vader', 'Leia Organa', 'Owen Lars', 'Beru Whitesun Lars', 'R5-D4', 'Biggs Darklighter', 'Obi-Wan Kenobi'\n$ height     &lt;i64&gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182\n$ mass       &lt;f64&gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 84.0, 77.0\n$ hair_color &lt;str&gt; 'blond', None, None, 'none', 'brown', 'brown, grey', 'brown', None, 'black', 'auburn, white'\n$ skin_color &lt;str&gt; 'fair', 'gold', 'white, blue', 'white', 'light', 'light', 'light', 'white, red', 'light', 'fair'\n$ eye_color  &lt;str&gt; 'blue', 'yellow', 'red', 'yellow', 'brown', 'blue', 'blue', 'red', 'brown', 'blue-gray'\n$ birth_year &lt;f64&gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, None, 24.0, 57.0\n$ sex        &lt;str&gt; 'male', 'none', 'none', 'male', 'female', 'male', 'female', 'none', 'male', 'male'\n$ gender     &lt;str&gt; 'masculine', 'masculine', 'masculine', 'masculine', 'feminine', 'masculine', 'feminine', 'masculine', 'masculine', 'masculine'\n$ homeworld  &lt;str&gt; 'Tatooine', 'Tatooine', 'Naboo', 'Tatooine', 'Alderaan', 'Tatooine', 'Tatooine', 'Tatooine', 'Tatooine', 'Stewjon'\n$ species    &lt;str&gt; 'Human', 'Droid', 'Droid', 'Human', 'Human', 'Human', 'Human', 'Droid', 'Human', 'Human'\n$ films      &lt;str&gt; 'A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith, The Force Awakens', 'A New Hope, The Empire Strikes Back, Return of the Jedi, The Phantom Menace, Attack of the Clones, Revenge of the Sith', 'A New Hope, The Empire Strikes Back, Return of the Jedi, The Phantom Menace, Attack of the Clones, Revenge of the Sith, The Force Awakens', 'A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith', 'A New Hope, The Empire Strikes Back, Return of the Jedi, Revenge of the Sith, The Force Awakens', 'A New Hope, Attack of the Clones, Revenge of the Sith', 'A New Hope, Attack of the Clones, Revenge of the Sith', 'A New Hope', 'A New Hope', 'A New Hope, The Empire Strikes Back, Return of the Jedi, The Phantom Menace, Attack of the Clones, Revenge of the Sith'\n$ vehicles   &lt;str&gt; 'Snowspeeder, Imperial Speeder Bike', None, None, None, 'Imperial Speeder Bike', None, None, None, None, 'Tribubble bongo'\n$ starships  &lt;str&gt; 'X-wing, Imperial shuttle', None, None, 'TIE Advanced x1', None, None, None, None, 'X-wing', 'Jedi starfighter, Trade Federation cruiser, Naboo star skiff, Jedi Interceptor, Belbullab-22 starfighter'"
+  },
+  {
+    "objectID": "lectures/2a.html#dataframe-parameters",
+    "href": "lectures/2a.html#dataframe-parameters",
+    "title": "2A: Data and Visualisation",
+    "section": "DataFrame Parameters",
+    "text": "DataFrame Parameters\n\nprint(starwars.shape[0])\nprint(starwars.shape[1])\nstarwars.shape\n\n87\n14\n\n\n(87, 14)"
+  },
+  {
+    "objectID": "lectures/2a.html#name-of-variables",
+    "href": "lectures/2a.html#name-of-variables",
+    "title": "2A: Data and Visualisation",
+    "section": "Name of Variables",
+    "text": "Name of Variables\n\nstarwars.columns\n\n['name',\n 'height',\n 'mass',\n 'hair_color',\n 'skin_color',\n 'eye_color',\n 'birth_year',\n 'sex',\n 'gender',\n 'homeworld',\n 'species',\n 'films',\n 'vehicles',\n 'starships']"
+  },
+  {
+    "objectID": "lectures/2a.html#filtering-data",
+    "href": "lectures/2a.html#filtering-data",
+    "title": "2A: Data and Visualisation",
+    "section": "Filtering Data",
+    "text": "Filtering Data\n\njabba = (\n    starwars\n    .filter(starwars.get_column(\"name\") == \"Jabba Desilijic Tiure\")\n)"
+  },
+  {
+    "objectID": "lectures/2a.html#what-is-eda",
+    "href": "lectures/2a.html#what-is-eda",
+    "title": "2A: Data and Visualisation",
+    "section": "What is EDA?",
+    "text": "What is EDA?\n\nExploratory data analysis (EDA) is an approach to analysing data sets to summarize its main characteristics\nOften, this is visual – this is what we’ll focus on first\nBut we might also calculate summary statistics and perform data wrangling/manipulation/transformation at (or before) this stage of the analysis – this is what we’ll focus on next"
+  },
+  {
+    "objectID": "lectures/2a.html#mass-vs.-height",
+    "href": "lectures/2a.html#mass-vs.-height",
+    "title": "2A: Data and Visualisation",
+    "section": "Mass vs. height",
+    "text": "Mass vs. height"
+  },
+  {
+    "objectID": "lectures/2a.html#data-visualization-1",
+    "href": "lectures/2a.html#data-visualization-1",
+    "title": "2A: Data and Visualisation",
+    "section": "Data visualization",
+    "text": "Data visualization\n\n“The simple graph has brought more information to the data analyst’s mind than any other device.” — John Tukey\n\n\nData visualization is the creation and study of the visual representation of data\nMany tools for visualizing data – R is one of them\nMany approaches/systems within R for making data visualizations – ggplot2 is one of them, and that’s what we’re going to use"
+  },
+  {
+    "objectID": "lectures/2a.html#plotnine",
+    "href": "lectures/2a.html#plotnine",
+    "title": "2A: Data and Visualisation",
+    "section": "plotnine",
+    "text": "plotnine\n\n(\n    ggplot(data = starwars.to_pandas(), mapping = aes(x = \"height\", y = \"mass\")) \n    + geom_point() \n    + labs(title = \"Mass vs. height of Starwars characters\",\n           x = \"Height (cm)\", y = \"Weight (kg)\")\n    + geom_point(data = jabba, size = 5, color = \"pink\", stroke = 3, alpha = 0.5)\n)"
+  },
+  {
+    "objectID": "lectures/2a.html#grammar-of-graphics",
+    "href": "lectures/2a.html#grammar-of-graphics",
+    "title": "2A: Data and Visualisation",
+    "section": "Grammar of Graphics",
+    "text": "Grammar of Graphics"
+  },
+  {
+    "objectID": "lectures/2a.html#mass-vs.-height-1",
+    "href": "lectures/2a.html#mass-vs.-height-1",
+    "title": "2A: Data and Visualisation",
+    "section": "Mass vs. height",
+    "text": "Mass vs. height"
+  },
+  {
+    "objectID": "lectures/2a.html#hello-ggplot2",
+    "href": "lectures/2a.html#hello-ggplot2",
+    "title": "2A: Data and Visualisation",
+    "section": "Hello ggplot2!",
+    "text": "Hello ggplot2!\n\nThe ggplot2 package comes with the tidyverse\nFor help with ggplot2, see ggplot2.tidyverse.org"
+  },
+  {
+    "objectID": "lectures/2a.html#anscombes-quartet",
+    "href": "lectures/2a.html#anscombes-quartet",
+    "title": "2A: Data and Visualisation",
+    "section": "Anscombe’s quartet",
+    "text": "Anscombe’s quartet\n\nquartet\n\n\nshape: (44, 3)\n\n\n\nset\nx\ny\n\n\nstr\ni64\nf64\n\n\n\n\n\"I\"\n10\n8.04\n\n\n\"I\"\n8\n6.95\n\n\n\"I\"\n13\n7.58\n\n\n\"I\"\n9\n8.81\n\n\n\"I\"\n11\n8.33\n\n\n…\n…\n…\n\n\n\"IV\"\n8\n5.25\n\n\n\"IV\"\n19\n12.5\n\n\n\"IV\"\n8\n5.56\n\n\n\"IV\"\n8\n7.91\n\n\n\"IV\"\n8\n6.89"
+  },
+  {
+    "objectID": "lectures/2a.html#summarising-anscombes-quartet",
+    "href": "lectures/2a.html#summarising-anscombes-quartet",
+    "title": "2A: Data and Visualisation",
+    "section": "Summarising Anscombe’s quartet",
+    "text": "Summarising Anscombe’s quartet\n\n(\n  quartet\n  .group_by(\"set\")\n  .agg(\n    mean_x = pl.mean(\"x\"),\n    mean_y = pl.mean(\"y\"),\n    sd_x = pl.std(\"x\"),\n    sd_y = pl.std(\"y\"),\n    r = pl.corr(\"x\", \"y\")\n    )\n    .sort(\"set\")\n\n)\n\n\nshape: (4, 6)\n\n\n\nset\nmean_x\nmean_y\nsd_x\nsd_y\nr\n\n\nstr\nf64\nf64\nf64\nf64\nf64\n\n\n\n\n\"I\"\n9.0\n7.500909\n3.316625\n2.031568\n0.816421\n\n\n\"II\"\n9.0\n7.500909\n3.316625\n2.031657\n0.816237\n\n\n\"III\"\n9.0\n7.5\n3.316625\n2.030424\n0.816287\n\n\n\"IV\"\n9.0\n7.500909\n3.316625\n2.030579\n0.816521"
+  },
+  {
+    "objectID": "lectures/2a.html#visualizing-anscombes-quartet",
+    "href": "lectures/2a.html#visualizing-anscombes-quartet",
+    "title": "2A: Data and Visualisation",
+    "section": "Visualizing Anscombe’s quartet",
+    "text": "Visualizing Anscombe’s quartet\n\n(\n    ggplot(data = quartet.to_pandas(), mapping = aes(x = \"x\", y = \"y\")) \n    + geom_point() \n    + facet_wrap(\"set\")\n)"
+  },
+  {
+    "objectID": "lectures/2a.html#age-at-first-kiss",
+    "href": "lectures/2a.html#age-at-first-kiss",
+    "title": "2A: Data and Visualisation",
+    "section": "Age at first kiss",
+    "text": "Age at first kiss\n\n(\n  ggplot(student_survey.to_pandas(), aes(x = \"first_kiss\")) +\n  geom_histogram(binwidth = 1) +\n  labs(\n    title = \"How old were you when you had your first kiss?\", \n    x = \"Age (years)\"\n    )\n)"
+  },
+  {
+    "objectID": "lectures/2a.html#facebook-visits",
+    "href": "lectures/2a.html#facebook-visits",
+    "title": "2A: Data and Visualisation",
+    "section": "Facebook visits",
+    "text": "Facebook visits\n\n(\n  ggplot(student_survey.to_pandas(), aes(x = \"fb_visits_per_day\")) +\n  geom_histogram(binwidth = 1) +\n  labs(\n    title = \"How many times do you go on Facebook per day?\", \n    x = \"Number of times\"\n    )\n)"
+  },
+  {
+    "objectID": "lectures.html",
+    "href": "lectures.html",
+    "title": "Lectures",
+    "section": "",
+    "text": "2A: Data and Visualisation\n\n\n\n\n\nProvide a Brief Introduction of Data, Study Design, and the Data Generating Process. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2B: Data Visualisation\n\n\nwith Plotnine (ggplot2)\n\n\nProvide a Brief Introduction of Data, Study Design, and the Data Generating Process. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2C: Data Visualisation\n\n\nNumerical Data\n\n\nProvide a Brief Introduction of Visualizing Numerical Data. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2D: Data Visualisation\n\n\nCategorical Data\n\n\nProvide a Brief Introduction of Visualizing Categorical Data. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3A: Data Preparation\n\n\nTidy Data\n\n\nProvide a Brief Introduction of Tidy Data. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3B: Data Preparation\n\n\nData Wrangling w/ Polars\n\n\nProvide a Brief Introduction to Polars. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3C: Data Preparation\n\n\nSingle Data Frame Functionality\n\n\nFunctions to alter a single data frame. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3D: Data Preparation\n\n\nMulti Data Frame Functionality\n\n\nFunctions to alter multi data frames. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3E: Data Preparation\n\n\nTidy Data\n\n\nFunctions to create Tidy Data. \n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "lectures/2b.html#ggplot2-in-tidyverse",
+    "href": "lectures/2b.html#ggplot2-in-tidyverse",
+    "title": "2B: Data Visualisation",
+    "section": "ggplot2 \\(\\in\\) tidyverse",
+    "text": "ggplot2 \\(\\in\\) tidyverse\n\nggplot2 is tidyverse’s data visualization package\nplotnine is Python’s implementation of ggplot2\nStructure of the code for plots can be summarized as\n\n(\nggplot(data = [dataset], \n       mapping = aes(x = \"x-variable\", \n                     y = \"y-variable\")) +\n   geom_xxx() +\n   other options\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#data-palmer-penguins",
+    "href": "lectures/2b.html#data-palmer-penguins",
+    "title": "2B: Data Visualisation",
+    "section": "Data: Palmer Penguins",
+    "text": "Data: Palmer Penguins\nMeasurements for penguin species, island in Palmer Archipelago, size (flipper length, body mass, bill dimensions), and sex.\n\nfrom palmerpenguins import load_penguins\npenguins = load_penguins().dropna()\n\n\n(\nggplot(data = penguins, \n       mapping = aes(x = \"bill_depth_mm\", y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n  + labs(title = \"Bill depth and length\",\n         subtitle = \"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n         x = \"Bill depth (mm)\", y = \"Bill length (mm)\",\n         colour = \"Species\")\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-1",
+    "href": "lectures/2b.html#coding-outloud-1",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins)\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-2",
+    "href": "lectures/2b.html#coding-outloud-2",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\"))\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-3",
+    "href": "lectures/2b.html#coding-outloud-3",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\"))\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-4",
+    "href": "lectures/2b.html#coding-outloud-4",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\"))\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-5",
+    "href": "lectures/2b.html#coding-outloud-5",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-6",
+    "href": "lectures/2b.html#coding-outloud-6",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n  + labs(title = \"Bill depth and length\")\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-7",
+    "href": "lectures/2b.html#coding-outloud-7",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\")) \n  + geom_point() \n  + labs(title = \"Bill depth and length\",\n       subtitle = \"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\") #&lt;&lt;\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-8",
+    "href": "lectures/2b.html#coding-outloud-8",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n  + labs(title = \"Bill depth and length\",\n         subtitle = \"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n         x = \"Bill depth (mm)\", \n         y = \"Bill length (mm)\")\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-9",
+    "href": "lectures/2b.html#coding-outloud-9",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n  + labs(title = \"Bill depth and length\",\n         subtitle = \"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n         x = \"Bill depth (mm)\", \n         y = \"Bill length (mm)\",\n         colour = \"Species\")\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#coding-outloud-10",
+    "href": "lectures/2b.html#coding-outloud-10",
+    "title": "2B: Data Visualisation",
+    "section": "Coding Outloud",
+    "text": "Coding Outloud\n\n\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\")) +\n  geom_point() +\n  labs(title = \"Bill depth and length\",\n       subtitle = \"Dimensions for Adelie, Chinstrap, and Gentoo Penguins\",\n       x = \"Bill depth (mm)\", \n       y = \"Bill length (mm)\",\n       colour = \"Species\",\n       caption = \"Source: Palmer Station LTER / palmerpenguins package\")\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#argument-names",
+    "href": "lectures/2b.html#argument-names",
+    "title": "2B: Data Visualisation",
+    "section": "Argument names",
+    "text": "Argument names\nYou can omit the names of first two arguments when building plots with ggplot().\n\n(\nggplot(data = penguins,\n       mapping = aes(x = \"bill_depth_mm\",\n                     y = \"bill_length_mm\",\n                     colour = \"species\"))\n  + geom_point()\n) \n\n\n\n\n\n\n\n\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\",\n           y = \"bill_length_mm\",\n           colour = \"species\"))\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#aesthetics-options",
+    "href": "lectures/2b.html#aesthetics-options",
+    "title": "2B: Data Visualisation",
+    "section": "Aesthetics options",
+    "text": "Aesthetics options\nCommonly used characteristics of plotting characters that can be mapped to a specific variable in the data are\n\ncolor\nshape\nsize\nalpha (transparency)"
+  },
+  {
+    "objectID": "lectures/2b.html#colour",
+    "href": "lectures/2b.html#colour",
+    "title": "2B: Data Visualisation",
+    "section": "Colour",
+    "text": "Colour\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\", \n           y = \"bill_length_mm\",\n           color = \"species\"))  #&lt;&lt;\n  + geom_point() \n)"
+  },
+  {
+    "objectID": "lectures/2b.html#shape",
+    "href": "lectures/2b.html#shape",
+    "title": "2B: Data Visualisation",
+    "section": "Shape",
+    "text": "Shape\nMapped to a different variable than color\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\", \n           y = \"bill_length_mm\",\n           color = \"species\",\n           shape = \"island\")) #&lt;&lt;\n  + geom_point() \n)"
+  },
+  {
+    "objectID": "lectures/2b.html#shape-1",
+    "href": "lectures/2b.html#shape-1",
+    "title": "2B: Data Visualisation",
+    "section": "Shape",
+    "text": "Shape\nMapped to same variable as colour\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\", \n           y = \"bill_length_mm\",\n           colour = \"species\",\n           shape = \"species\"))  #&lt;&lt;\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#size",
+    "href": "lectures/2b.html#size",
+    "title": "2B: Data Visualisation",
+    "section": "Size",
+    "text": "Size\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\", \n           y = \"bill_length_mm\",\n           color = \"species\",\n           shape = \"species\",\n           size = \"body_mass_g\"))  #&lt;&lt;\n  + geom_point()\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#alpha",
+    "href": "lectures/2b.html#alpha",
+    "title": "2B: Data Visualisation",
+    "section": "Alpha",
+    "text": "Alpha\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\", \n           y = \"bill_length_mm\",\n           color = \"species\",\n           shape = \"species\",\n           size = \"body_mass_g\",\n           alpha = \"flipper_length_mm\"))  #&lt;&lt;\n  + geom_point() \n)  \n\n\n\n\n\n\n\n\nMapping\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\",\n           y = \"bill_length_mm\",\n           size = \"body_mass_g\", #&lt;&lt;\n           alpha = \"flipper_length_mm\"))  #&lt;&lt;\n  + geom_point()\n)\n\n\n\n\n\n\n\n\nSetting\n\n(\nggplot(penguins,\n       aes(x = \"bill_depth_mm\",\n           y = \"bill_length_mm\"))  \n  + geom_point(size = 2, alpha = 0.5) #&lt;&lt;\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#mapping-vs.-setting",
+    "href": "lectures/2b.html#mapping-vs.-setting",
+    "title": "2B: Data Visualisation",
+    "section": "Mapping vs. setting",
+    "text": "Mapping vs. setting\n\nMapping: Determine the size, alpha, etc. of points based on the values of a variable in the data\n\ngoes into aes()\n\nSetting: Determine the size, alpha, etc. of points not based on the values of a variable in the data\n\ngoes into geom_*() (this was geom_point() in the previous example, but we’ll learn about other geoms soon!)"
+  },
+  {
+    "objectID": "lectures/2b.html#faceting-1",
+    "href": "lectures/2b.html#faceting-1",
+    "title": "2B: Data Visualisation",
+    "section": "Faceting",
+    "text": "Faceting\n\nSmaller plots that display different subsets of the data\nUseful for exploring conditional relationships and large data\n\n\n(\n  ggplot(penguins, aes(x = \"bill_depth_mm\", y = \"bill_length_mm\"))\n    + geom_point()\n    + facet_grid(rows = \"species\",\n                 cols = \"island\") #&lt;&lt;\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#various-ways-to-facet",
+    "href": "lectures/2b.html#various-ways-to-facet",
+    "title": "2B: Data Visualisation",
+    "section": "Various ways to facet",
+    "text": "Various ways to facet\n.question[ In the next few slides describe what each plot displays. Think about how the code relates to the output.\nNote: The plots in the next few slides do not have proper titles, axis labels, etc. because we want you to figure out what’s happening in the plots. But you should always label your plots! ]\n\n(\n  ggplot(penguins, aes(x = \"bill_depth_mm\", y = \"bill_length_mm\"))\n    + geom_point()\n    + facet_grid(rows = \"species\",\n                 cols = \"sex\") #&lt;&lt;\n)\n\n\n\n\n\n\n\n\n\n(\n  ggplot(penguins, aes(x = \"bill_depth_mm\", y = \"bill_length_mm\"))\n    + geom_point()\n    + facet_grid(cols = \"species\",\n                 rows = \"sex\") #&lt;&lt;\n)\n\n\n\n\n\n\n\n\n\n(\n  ggplot(penguins, aes(x = \"bill_depth_mm\", y = \"bill_length_mm\"))\n    + geom_point()\n    + facet_wrap(\"species\") #&lt;&lt;\n)\n\n\n\n\n\n\n\n\n\n(\n  ggplot(penguins, aes(x = \"bill_depth_mm\", y = \"bill_length_mm\"))\n    + geom_point()\n    + facet_wrap(\"species\", ncol = 2) #&lt;&lt;\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#faceting-summary",
+    "href": "lectures/2b.html#faceting-summary",
+    "title": "2B: Data Visualisation",
+    "section": "Faceting summary",
+    "text": "Faceting summary\n\nfacet_grid():\n\n2d grid\n\nfacet_wrap(): 1d ribbon wrapped according to number of rows and columns specified or available plotting area"
+  },
+  {
+    "objectID": "lectures/2b.html#facet-and-color",
+    "href": "lectures/2b.html#facet-and-color",
+    "title": "2B: Data Visualisation",
+    "section": "Facet and color",
+    "text": "Facet and color\n\n(\n  ggplot(penguins, \n         aes(x = \"bill_depth_mm\", \n             y = \"bill_length_mm\",\n             color = \"species\"))\n    + geom_point()\n    + facet_grid(cols = \"species\",\n                 rows = \"sex\") #&lt;&lt;\n)"
+  },
+  {
+    "objectID": "lectures/2b.html#face-and-color-no-legend",
+    "href": "lectures/2b.html#face-and-color-no-legend",
+    "title": "2B: Data Visualisation",
+    "section": "Face and color, no legend",
+    "text": "Face and color, no legend\n\n(\n  ggplot(penguins, \n         aes(x = \"bill_depth_mm\", \n             y = \"bill_length_mm\",\n             color = \"species\"))\n    + geom_point()\n    + facet_grid(cols = \"species\",\n                 rows = \"sex\")\n    + guides(color = \"none\")\n)"
+  },
+  {
+    "objectID": "lectures/2d.html#loaded-modules-and-data",
+    "href": "lectures/2d.html#loaded-modules-and-data",
+    "title": "2D: Data Visualisation",
+    "section": "Loaded Modules and Data",
+    "text": "Loaded Modules and Data\n\nfrom plotnine import *\nimport polars as pl\n\nloan_full_schema = pl.read_csv(\"~/Repos/d200x/lectures/data/loans_full_schema.csv\",\n                               null_values = [\"NA\"],\n                               infer_schema_length=10000)"
+  },
+  {
+    "objectID": "lectures/2d.html#variables",
+    "href": "lectures/2d.html#variables",
+    "title": "2D: Data Visualisation",
+    "section": "Variables",
+    "text": "Variables\n\nNumerical variables can be classified as continuous or discrete based on whether or not the variable can take on an infinite number of values or only non-negative whole numbers, respectively.\nIf the variable is categorical, we can determine if it is ordinal based on whether or not the levels have a natural ordering."
+  },
+  {
+    "objectID": "lectures/2d.html#load-data",
+    "href": "lectures/2d.html#load-data",
+    "title": "2D: Data Visualisation",
+    "section": "Load Data",
+    "text": "Load Data\n\nloan_full_schema = pl.read_csv(\"~/Repos/d200x/lectures/data/loans_full_schema.csv\",\n                               null_values = [\"NA\"],\n                               infer_schema_length=10000)"
+  },
+  {
+    "objectID": "lectures/2d.html#data",
+    "href": "lectures/2d.html#data",
+    "title": "2D: Data Visualisation",
+    "section": "Data",
+    "text": "Data\n\nloans = (\n    loan_full_schema\n        .select(pl.col(\"loan_amount\"), \n                pl.col(\"interest_rate\"), \n                pl.col(\"term\"), \n                pl.col(\"grade\"),\n                pl.col(\"state\"), \n                pl.col(\"annual_income\"), \n                pl.col(\"homeownership\"), \n                pl.col(\"debt_to_income\"))\n\n)\nloans.glimpse()\n\nRows: 10000\nColumns: 8\n$ loan_amount    &lt;i64&gt; 28000, 5000, 2000, 21600, 23000, 5000, 24000, 20000, 20000, 6400\n$ interest_rate  &lt;f64&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, 13.59, 11.99, 13.59, 6.71\n$ term           &lt;i64&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36\n$ grade          &lt;str&gt; 'C', 'C', 'D', 'A', 'C', 'A', 'C', 'B', 'C', 'A'\n$ state          &lt;str&gt; 'NJ', 'HI', 'WI', 'PA', 'CA', 'KY', 'MI', 'AZ', 'NV', 'IL'\n$ annual_income  &lt;f64&gt; 90000.0, 40000.0, 40000.0, 30000.0, 35000.0, 34000.0, 35000.0, 110000.0, 65000.0, 30000.0\n$ homeownership  &lt;str&gt; 'MORTGAGE', 'RENT', 'RENT', 'RENT', 'RENT', 'OWN', 'MORTGAGE', 'MORTGAGE', 'MORTGAGE', 'RENT'\n$ debt_to_income &lt;f64&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, 23.66, 16.19, 36.48, 18.91"
+  },
+  {
+    "objectID": "lectures/2d.html#bar-plot-1",
+    "href": "lectures/2d.html#bar-plot-1",
+    "title": "2D: Data Visualisation",
+    "section": "Bar plot",
+    "text": "Bar plot\n\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\"))\n  + geom_bar()\n)"
+  },
+  {
+    "objectID": "lectures/2d.html#segmented-bar-plot",
+    "href": "lectures/2d.html#segmented-bar-plot",
+    "title": "2D: Data Visualisation",
+    "section": "Segmented bar plot",
+    "text": "Segmented bar plot\n\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", \n                  fill = \"grade\"))\n  + geom_bar()\n)"
+  },
+  {
+    "objectID": "lectures/2d.html#segmented-bar-plot-1",
+    "href": "lectures/2d.html#segmented-bar-plot-1",
+    "title": "2D: Data Visualisation",
+    "section": "Segmented bar plot",
+    "text": "Segmented bar plot\n\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", fill = \"grade\")) \n  + geom_bar(position = \"fill\")\n)"
+  },
+  {
+    "objectID": "lectures/2d.html#segmented-bar-plot-2",
+    "href": "lectures/2d.html#segmented-bar-plot-2",
+    "title": "2D: Data Visualisation",
+    "section": "Segmented Bar Plot",
+    "text": "Segmented Bar Plot\n\nWhich bar plot is a more useful representation for visualizing the relationship between homeownership and grade?\n\n\n\n\n\nCode\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", fill = \"grade\")) \n  + geom_bar()\n)\n\n\n\n\n\n\n\n\n\n\n\n\nCode\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", fill = \"grade\")) \n  + geom_bar(position = \"fill\")\n)"
+  },
+  {
+    "objectID": "lectures/2d.html#customizing-bar-plots",
+    "href": "lectures/2d.html#customizing-bar-plots",
+    "title": "2D: Data Visualisation",
+    "section": "Customizing bar plots",
+    "text": "Customizing bar plots\n\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", \n                              fill = \"grade\"))\n  + geom_bar(position = \"fill\")\n  + labs( \n         x = \"Proportion\",\n         y = \"Homeownership\", \n         fill = \"Grade\", \n         title = \"Grades of Lending Club loans\", \n         subtitle = \"and homeownership of lendee\" \n        ) \n)"
+  },
+  {
+    "objectID": "lectures/2d.html#already-talked-about",
+    "href": "lectures/2d.html#already-talked-about",
+    "title": "2D: Data Visualisation",
+    "section": "Already talked about…",
+    "text": "Already talked about…\n\nColouring and faceting histograms and density plots\nSide-by-side box plots"
+  },
+  {
+    "objectID": "lectures/2d.html#violin-plots",
+    "href": "lectures/2d.html#violin-plots",
+    "title": "2D: Data Visualisation",
+    "section": "Violin plots",
+    "text": "Violin plots\n\n(\nggplot(loans.to_pandas(), aes(x = \"homeownership\", y = \"loan_amount\"))\n  + geom_violin()\n)"
+  },
+  {
+    "objectID": "lectures/3b.html#modules-and-data",
+    "href": "lectures/3b.html#modules-and-data",
+    "title": "3B: Data Preparation",
+    "section": "Modules and Data",
+    "text": "Modules and Data\n\nimport polars as pl\n\nhotels = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv\",\n                     null_values = [\"NA\"])"
+  },
+  {
+    "objectID": "lectures/3b.html#a-grammar-of-data-wrangling",
+    "href": "lectures/3b.html#a-grammar-of-data-wrangling",
+    "title": "3B: Data Preparation",
+    "section": "A grammar of data wrangling…",
+    "text": "A grammar of data wrangling…\n… based on the concepts of functions as verbs that manipulate data frames\n\n\n\n\n\nselect: pick columns by name\nsort: reorder rows\nslice: pick rows using index(es)\nfilter: pick rows matching criteria\nwith_columns: add new variables\nagg: reduce variables to values\ngroup_by: for grouped operations\n… (many more)\n\n\n\nSource: Polars Website"
+  },
+  {
+    "objectID": "lectures/3b.html#rules-of-polars-functions",
+    "href": "lectures/3b.html#rules-of-polars-functions",
+    "title": "3B: Data Preparation",
+    "section": "Rules of polars functions",
+    "text": "Rules of polars functions\n\nFirst argument is always a data frame\nSubsequent arguments say what to do with that data frame\nAlways return a data frame\nDon’t modify in place"
+  },
+  {
+    "objectID": "lectures/3b.html#data-hotel-bookings",
+    "href": "lectures/3b.html#data-hotel-bookings",
+    "title": "3B: Data Preparation",
+    "section": "Data: Hotel bookings",
+    "text": "Data: Hotel bookings\n\nData from two hotels: one resort and one city hotel\nObservations: Each row represents a hotel booking\nGoal for original data collection: Development of prediction models to classify a hotel booking’s likelihood to be cancelled (Antonia et al., 2019)\n\n\nhotels = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d06-grammar-wrangle/data/hotels.csv\",\n                     null_values = [\"NA\"])\n\n\nSource: TidyTuesday"
+  },
+  {
+    "objectID": "lectures/3b.html#first-look-variables",
+    "href": "lectures/3b.html#first-look-variables",
+    "title": "3B: Data Preparation",
+    "section": "First look: Variables",
+    "text": "First look: Variables\n\nhotels.columns\n\n['hotel',\n 'is_canceled',\n 'lead_time',\n 'arrival_date_year',\n 'arrival_date_month',\n 'arrival_date_week_number',\n 'arrival_date_day_of_month',\n 'stays_in_weekend_nights',\n 'stays_in_week_nights',\n 'adults',\n 'children',\n 'babies',\n 'meal',\n 'country',\n 'market_segment',\n 'distribution_channel',\n 'is_repeated_guest',\n 'previous_cancellations',\n 'previous_bookings_not_canceled',\n 'reserved_room_type',\n 'assigned_room_type',\n 'booking_changes',\n 'deposit_type',\n 'agent',\n 'company',\n 'days_in_waiting_list',\n 'customer_type',\n 'adr',\n 'required_car_parking_spaces',\n 'total_of_special_requests',\n 'reservation_status',\n 'reservation_status_date']"
+  },
+  {
+    "objectID": "lectures/3b.html#second-look-overview",
+    "href": "lectures/3b.html#second-look-overview",
+    "title": "3B: Data Preparation",
+    "section": "Second look: Overview",
+    "text": "Second look: Overview\n\nhotels.glimpse()\n\nRows: 119390\nColumns: 32\n$ hotel                          &lt;str&gt; 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel', 'Resort Hotel'\n$ is_canceled                    &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 1\n$ lead_time                      &lt;i64&gt; 342, 737, 7, 13, 14, 14, 0, 9, 85, 75\n$ arrival_date_year              &lt;i64&gt; 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015\n$ arrival_date_month             &lt;str&gt; 'July', 'July', 'July', 'July', 'July', 'July', 'July', 'July', 'July', 'July'\n$ arrival_date_week_number       &lt;i64&gt; 27, 27, 27, 27, 27, 27, 27, 27, 27, 27\n$ arrival_date_day_of_month      &lt;i64&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1\n$ stays_in_weekend_nights        &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ stays_in_week_nights           &lt;i64&gt; 0, 0, 1, 1, 2, 2, 2, 2, 3, 3\n$ adults                         &lt;i64&gt; 2, 2, 1, 1, 2, 2, 2, 2, 2, 2\n$ children                       &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ babies                         &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ meal                           &lt;str&gt; 'BB', 'BB', 'BB', 'BB', 'BB', 'BB', 'BB', 'FB', 'BB', 'HB'\n$ country                        &lt;str&gt; 'PRT', 'PRT', 'GBR', 'GBR', 'GBR', 'GBR', 'PRT', 'PRT', 'PRT', 'PRT'\n$ market_segment                 &lt;str&gt; 'Direct', 'Direct', 'Direct', 'Corporate', 'Online TA', 'Online TA', 'Direct', 'Direct', 'Online TA', 'Offline TA/TO'\n$ distribution_channel           &lt;str&gt; 'Direct', 'Direct', 'Direct', 'Corporate', 'TA/TO', 'TA/TO', 'Direct', 'Direct', 'TA/TO', 'TA/TO'\n$ is_repeated_guest              &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ previous_cancellations         &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ previous_bookings_not_canceled &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ reserved_room_type             &lt;str&gt; 'C', 'C', 'A', 'A', 'A', 'A', 'C', 'C', 'A', 'D'\n$ assigned_room_type             &lt;str&gt; 'C', 'C', 'C', 'A', 'A', 'A', 'C', 'C', 'A', 'D'\n$ booking_changes                &lt;i64&gt; 3, 4, 0, 0, 0, 0, 0, 0, 0, 0\n$ deposit_type                   &lt;str&gt; 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit', 'No Deposit'\n$ agent                          &lt;str&gt; 'NULL', 'NULL', 'NULL', '304', '240', '240', 'NULL', '303', '240', '15'\n$ company                        &lt;str&gt; 'NULL', 'NULL', 'NULL', 'NULL', 'NULL', 'NULL', 'NULL', 'NULL', 'NULL', 'NULL'\n$ days_in_waiting_list           &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ customer_type                  &lt;str&gt; 'Transient', 'Transient', 'Transient', 'Transient', 'Transient', 'Transient', 'Transient', 'Transient', 'Transient', 'Transient'\n$ adr                            &lt;f64&gt; 0.0, 0.0, 75.0, 75.0, 98.0, 98.0, 107.0, 103.0, 82.0, 105.5\n$ required_car_parking_spaces    &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n$ total_of_special_requests      &lt;i64&gt; 0, 0, 0, 0, 1, 1, 0, 1, 1, 0\n$ reservation_status             &lt;str&gt; 'Check-Out', 'Check-Out', 'Check-Out', 'Check-Out', 'Check-Out', 'Check-Out', 'Check-Out', 'Check-Out', 'Canceled', 'Canceled'\n$ reservation_status_date        &lt;str&gt; '2015-07-01', '2015-07-01', '2015-07-02', '2015-07-02', '2015-07-03', '2015-07-03', '2015-07-03', '2015-07-03', '2015-05-06', '2015-04-22'"
+  },
+  {
+    "objectID": "lectures/3b.html#select-a-single-column",
+    "href": "lectures/3b.html#select-a-single-column",
+    "title": "3B: Data Preparation",
+    "section": "Select a single column",
+    "text": "Select a single column\nView only lead_time (number of days between booking and arrival date):\n\nhotels.select(\"lead_time\")\n\n\nshape: (119_390, 1)\n\n\n\nlead_time\n\n\ni64\n\n\n\n\n342\n\n\n737\n\n\n7\n\n\n13\n\n\n14\n\n\n…\n\n\n23\n\n\n102\n\n\n34\n\n\n109\n\n\n205"
+  },
+  {
+    "objectID": "lectures/3b.html#select-multiple-columns",
+    "href": "lectures/3b.html#select-multiple-columns",
+    "title": "3B: Data Preparation",
+    "section": "Select multiple columns",
+    "text": "Select multiple columns\nView only the hotel type and lead_time:\n\nhotels.select([\"hotel\", \"lead_time\"])\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n342\n\n\n\"Resort Hotel\"\n737\n\n\n\"Resort Hotel\"\n7\n\n\n\"Resort Hotel\"\n13\n\n\n\"Resort Hotel\"\n14\n\n\n…\n…\n\n\n\"City Hotel\"\n23\n\n\n\"City Hotel\"\n102\n\n\n\"City Hotel\"\n34\n\n\n\"City Hotel\"\n109\n\n\n\"City Hotel\"\n205\n\n\n\n\n\n\n\n\nWhat if we wanted to select these columns, and then arrange the data in descending order of lead time?"
+  },
+  {
+    "objectID": "lectures/3b.html#data-wrangling-step-by-step",
+    "href": "lectures/3b.html#data-wrangling-step-by-step",
+    "title": "3B: Data Preparation",
+    "section": "Data wrangling, step-by-step",
+    "text": "Data wrangling, step-by-step\n\n\nSelect:\n\nhotels.select([\"hotel\", \"lead_time\"])\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n342\n\n\n\"Resort Hotel\"\n737\n\n\n\"Resort Hotel\"\n7\n\n\n\"Resort Hotel\"\n13\n\n\n\"Resort Hotel\"\n14\n\n\n…\n…\n\n\n\"City Hotel\"\n23\n\n\n\"City Hotel\"\n102\n\n\n\"City Hotel\"\n34\n\n\n\"City Hotel\"\n109\n\n\n\"City Hotel\"\n205\n\n\n\n\n\n\n\nSelect, then arrange:\n\nhotels.select([\"hotel\", \"lead_time\"]).sort(\"lead_time\")\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n…\n…\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"Resort Hotel\"\n709\n\n\n\"Resort Hotel\"\n737"
+  },
+  {
+    "objectID": "lectures/3b.html#method-chaining-1",
+    "href": "lectures/3b.html#method-chaining-1",
+    "title": "3B: Data Preparation",
+    "section": "Method-Chaining",
+    "text": "Method-Chaining\nMethod-chaining is the way to “chain” functions together to complete a task:\n\n\n\nhotels_select = hotels.select([\"hotel\", \"lead_time\"])\nhotels_select.sort(\"lead_time\")\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n…\n…\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"Resort Hotel\"\n709\n\n\n\"Resort Hotel\"\n737\n\n\n\n\n\n\n\n\nhotels.select([\"hotel\", \"lead_time\"]).sort(\"lead_time\")\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n…\n…\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"Resort Hotel\"\n709\n\n\n\"Resort Hotel\"\n737"
+  },
+  {
+    "objectID": "lectures/3b.html#method-chaining-2",
+    "href": "lectures/3b.html#method-chaining-2",
+    "title": "3B: Data Preparation",
+    "section": "Method-Chaining",
+    "text": "Method-Chaining\nYou can rewrite a method-chained as a line-by-line task and surrounded by parantheses:\n\n(\n  hotels\n    .select([\"hotel\", \"lead_time\"])\n    .sort(\"lead_time\")\n)\n\n\nshape: (119_390, 2)\n\n\n\nhotel\nlead_time\n\n\nstr\ni64\n\n\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n\"Resort Hotel\"\n0\n\n\n…\n…\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"City Hotel\"\n629\n\n\n\"Resort Hotel\"\n709\n\n\n\"Resort Hotel\"\n737"
+  },
+  {
+    "objectID": "lectures/3d.html#modules-and-data",
+    "href": "lectures/3d.html#modules-and-data",
+    "title": "3D: Data Preparation",
+    "section": "Modules and Data",
+    "text": "Modules and Data\n\nimport polars as pl\n\n## Women in Science\n\nprofessions = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/professions.csv\")\ndates = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/dates.csv\")\nworks = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/scientists/works.csv\")\n\n\n## Students\n\nenrolment = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/students/enrolment.csv\")\nsurvey = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/students/survey.csv\")\n\n\n## Sales\npurchases = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/sales/purchases.csv\")\nprices = pl.read_csv(\"https://raw.githubusercontent.com/tidyverse/datascience-box/refs/heads/main/course-materials/_slides/u2-d08-multi-df/data/sales/prices.csv\")"
+  },
+  {
+    "objectID": "lectures/3d.html#data-women-in-science",
+    "href": "lectures/3d.html#data-women-in-science",
+    "title": "3D: Data Preparation",
+    "section": "Data: Women in science",
+    "text": "Data: Women in science\nInformation on 10 women in science who changed the world\n\n\n\n\nshape: (10, 1)\n\n\n\nname\n\n\nstr\n\n\n\n\n\"Ada Lovelace\"\n\n\n\"Marie Curie\"\n\n\n\"Janaki Ammal\"\n\n\n\"Chien-Shiung Wu\"\n\n\n\"Katherine Johnson\"\n\n\n\"Rosalind Franklin\"\n\n\n\"Vera Rubin\"\n\n\n\"Gladys West\"\n\n\n\"Flossie Wong-Staal\"\n\n\n\"Jennifer Doudna\"\n\n\n\n\n\n\n\n\nSource: Discover Magazine"
+  },
+  {
+    "objectID": "lectures/3d.html#inputs",
+    "href": "lectures/3d.html#inputs",
+    "title": "3D: Data Preparation",
+    "section": "Inputs",
+    "text": "Inputs\n\nProfessionsDatesWorks\n\n\n\nprofessions\n\n\nshape: (10, 2)\n\n\n\nname\nprofession\n\n\nstr\nstr\n\n\n\n\n\"Ada Lovelace\"\n\"Mathematician\"\n\n\n\"Marie Curie\"\n\"Physicist and Chemist\"\n\n\n\"Janaki Ammal\"\n\"Botanist\"\n\n\n\"Chien-Shiung Wu\"\n\"Physicist\"\n\n\n\"Katherine Johnson\"\n\"Mathematician\"\n\n\n\"Rosalind Franklin\"\n\"Chemist\"\n\n\n\"Vera Rubin\"\n\"Astronomer\"\n\n\n\"Gladys West\"\n\"Mathematician\"\n\n\n\"Flossie Wong-Staal\"\n\"Virologist and Molecular Biolo…\n\n\n\"Jennifer Doudna\"\n\"Biochemist\"\n\n\n\n\n\n\n\n\n\ndates\n\n\nshape: (8, 3)\n\n\n\nname\nbirth_year\ndeath_year\n\n\nstr\ni64\ni64\n\n\n\n\n\"Janaki Ammal\"\n1897\n1984\n\n\n\"Chien-Shiung Wu\"\n1912\n1997\n\n\n\"Katherine Johnson\"\n1918\n2020\n\n\n\"Rosalind Franklin\"\n1920\n1958\n\n\n\"Vera Rubin\"\n1928\n2016\n\n\n\"Gladys West\"\n1930\nnull\n\n\n\"Flossie Wong-Staal\"\n1947\nnull\n\n\n\"Jennifer Doudna\"\n1964\nnull\n\n\n\n\n\n\n\n\n\nworks\n\n\nshape: (9, 2)\n\n\n\nname\nknown_for\n\n\nstr\nstr\n\n\n\n\n\"Ada Lovelace\"\n\"first computer algorithm\"\n\n\n\"Marie Curie\"\n\"theory of radioactivity,  disc…\n\n\n\"Janaki Ammal\"\n\"hybrid species, biodiversity p…\n\n\n\"Chien-Shiung Wu\"\n\"confim and refine theory of ra…\n\n\n\"Katherine Johnson\"\n\"calculations of orbital mechan…\n\n\n\"Vera Rubin\"\n\"existence of dark matter\"\n\n\n\"Gladys West\"\n\"mathematical modeling of the s…\n\n\n\"Flossie Wong-Staal\"\n\"first scientist to clone HIV a…\n\n\n\"Jennifer Doudna\"\n\"one of the primary developers …"
+  },
+  {
+    "objectID": "lectures/3d.html#desired-output",
+    "href": "lectures/3d.html#desired-output",
+    "title": "3D: Data Preparation",
+    "section": "Desired output",
+    "text": "Desired output\n\n\n\nshape: (10, 5)\n\n\n\nname\nprofession\nbirth_year\ndeath_year\nknown_for\n\n\nstr\nstr\ni64\ni64\nstr\n\n\n\n\n\"Ada Lovelace\"\n\"Mathematician\"\nnull\nnull\n\"first computer algorithm\"\n\n\n\"Marie Curie\"\n\"Physicist and Chemist\"\nnull\nnull\n\"theory of radioactivity,  disc…\n\n\n\"Janaki Ammal\"\n\"Botanist\"\n1897\n1984\n\"hybrid species, biodiversity p…\n\n\n\"Chien-Shiung Wu\"\n\"Physicist\"\n1912\n1997\n\"confim and refine theory of ra…\n\n\n\"Katherine Johnson\"\n\"Mathematician\"\n1918\n2020\n\"calculations of orbital mechan…\n\n\n\"Rosalind Franklin\"\n\"Chemist\"\n1920\n1958\nnull\n\n\n\"Vera Rubin\"\n\"Astronomer\"\n1928\n2016\n\"existence of dark matter\"\n\n\n\"Gladys West\"\n\"Mathematician\"\n1930\nnull\n\"mathematical modeling of the s…\n\n\n\"Flossie Wong-Staal\"\n\"Virologist and Molecular Biolo…\n1947\nnull\n\"first scientist to clone HIV a…\n\n\n\"Jennifer Doudna\"\n\"Biochemist\"\n1964\nnull\n\"one of the primary developers …"
+  },
+  {
+    "objectID": "lectures/3d.html#inputs-reminder",
+    "href": "lectures/3d.html#inputs-reminder",
+    "title": "3D: Data Preparation",
+    "section": "Inputs, reminder",
+    "text": "Inputs, reminder\n\n\n\n\nprofessions.columns\ndates.columns\nworks.columns\n\n['name', 'known_for']\n\n\n\n\nprofessions.shape\ndates.shape\nworks.shape\n\n(9, 2)"
+  },
+  {
+    "objectID": "lectures/3d.html#joining-data-frames-1",
+    "href": "lectures/3d.html#joining-data-frames-1",
+    "title": "3D: Data Preparation",
+    "section": "Joining data frames",
+    "text": "Joining data frames\n\nx.join(y, on = A1, how = A2)\n\n\n.join(): all data frames x and y\non: use A1 (string) to link rows from x and y\nhow: combine data frames as recommed by A2 (string)\n…"
+  },
+  {
+    "objectID": "lectures/3d.html#setup",
+    "href": "lectures/3d.html#setup",
+    "title": "3D: Data Preparation",
+    "section": "Setup",
+    "text": "Setup\nFor the next few slides…\n\n\n\n\nx = pl.DataFrame({\n    \"id\": [1, 2, 3],\n    \"value_x\": [\"x1\", \"x2\", \"x3\"],\n})\n\nx\n\n\nshape: (3, 2)\n\n\n\nid\nvalue_x\n\n\ni64\nstr\n\n\n\n\n1\n\"x1\"\n\n\n2\n\"x2\"\n\n\n3\n\"x3\"\n\n\n\n\n\n\n\n\ny = pl.DataFrame({\n    \"id\": [1, 2, 4],\n    \"value_y\": [\"y1\", \"y2\", \"y4\"]\n})\n\ny\n\n\nshape: (3, 2)\n\n\n\nid\nvalue_y\n\n\ni64\nstr\n\n\n\n\n1\n\"y1\"\n\n\n2\n\"y2\"\n\n\n4\n\"y4\""
+  },
+  {
+    "objectID": "lectures/3d.html#left-join",
+    "href": "lectures/3d.html#left-join",
+    "title": "3D: Data Preparation",
+    "section": "Left Join",
+    "text": "Left Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"left\")\n\n\nshape: (3, 3)\n\n\n\nid\nvalue_x\nvalue_y\n\n\ni64\nstr\nstr\n\n\n\n\n1\n\"x1\"\n\"y1\"\n\n\n2\n\"x2\"\n\"y2\"\n\n\n3\n\"x3\"\nnull"
+  },
+  {
+    "objectID": "lectures/3d.html#right-join",
+    "href": "lectures/3d.html#right-join",
+    "title": "3D: Data Preparation",
+    "section": "Right Join",
+    "text": "Right Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"right\")\n\n\nshape: (3, 3)\n\n\n\nvalue_x\nid\nvalue_y\n\n\nstr\ni64\nstr\n\n\n\n\n\"x1\"\n1\n\"y1\"\n\n\n\"x2\"\n2\n\"y2\"\n\n\nnull\n4\n\"y4\""
+  },
+  {
+    "objectID": "lectures/3d.html#full-join",
+    "href": "lectures/3d.html#full-join",
+    "title": "3D: Data Preparation",
+    "section": "Full Join",
+    "text": "Full Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"full\")\n\n\nshape: (4, 4)\n\n\n\nid\nvalue_x\nid_right\nvalue_y\n\n\ni64\nstr\ni64\nstr\n\n\n\n\n1\n\"x1\"\n1\n\"y1\"\n\n\n2\n\"x2\"\n2\n\"y2\"\n\n\nnull\nnull\n4\n\"y4\"\n\n\n3\n\"x3\"\nnull\nnull"
+  },
+  {
+    "objectID": "lectures/3d.html#inner-join",
+    "href": "lectures/3d.html#inner-join",
+    "title": "3D: Data Preparation",
+    "section": "Inner Join",
+    "text": "Inner Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"inner\")\n\n\nshape: (2, 3)\n\n\n\nid\nvalue_x\nvalue_y\n\n\ni64\nstr\nstr\n\n\n\n\n1\n\"x1\"\n\"y1\"\n\n\n2\n\"x2\"\n\"y2\""
+  },
+  {
+    "objectID": "lectures/3d.html#semi-join",
+    "href": "lectures/3d.html#semi-join",
+    "title": "3D: Data Preparation",
+    "section": "Semi Join",
+    "text": "Semi Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"semi\")\n\n\nshape: (2, 2)\n\n\n\nid\nvalue_x\n\n\ni64\nstr\n\n\n\n\n1\n\"x1\"\n\n\n2\n\"x2\""
+  },
+  {
+    "objectID": "lectures/3d.html#anti-join",
+    "href": "lectures/3d.html#anti-join",
+    "title": "3D: Data Preparation",
+    "section": "Anti Join",
+    "text": "Anti Join\n\n\n\n\n\nx.join(y, on = \"id\", how = \"anti\")\n\n\nshape: (1, 2)\n\n\n\nid\nvalue_x\n\n\ni64\nstr\n\n\n\n\n3\n\"x3\""
+  },
+  {
+    "objectID": "lectures/3d.html#multiple-joins",
+    "href": "lectures/3d.html#multiple-joins",
+    "title": "3D: Data Preparation",
+    "section": "Multiple Joins",
+    "text": "Multiple Joins\n\n(\n    professions\n        .join(dates, on = \"name\", how = \"left\")\n        .join(works, on = \"name\", how = \"left\")\n)\n\n\nshape: (10, 5)\n\n\n\nname\nprofession\nbirth_year\ndeath_year\nknown_for\n\n\nstr\nstr\ni64\ni64\nstr\n\n\n\n\n\"Ada Lovelace\"\n\"Mathematician\"\nnull\nnull\n\"first computer algorithm\"\n\n\n\"Marie Curie\"\n\"Physicist and Chemist\"\nnull\nnull\n\"theory of radioactivity,  disc…\n\n\n\"Janaki Ammal\"\n\"Botanist\"\n1897\n1984\n\"hybrid species, biodiversity p…\n\n\n\"Chien-Shiung Wu\"\n\"Physicist\"\n1912\n1997\n\"confim and refine theory of ra…\n\n\n\"Katherine Johnson\"\n\"Mathematician\"\n1918\n2020\n\"calculations of orbital mechan…\n\n\n\"Rosalind Franklin\"\n\"Chemist\"\n1920\n1958\nnull\n\n\n\"Vera Rubin\"\n\"Astronomer\"\n1928\n2016\n\"existence of dark matter\"\n\n\n\"Gladys West\"\n\"Mathematician\"\n1930\nnull\n\"mathematical modeling of the s…\n\n\n\"Flossie Wong-Staal\"\n\"Virologist and Molecular Biolo…\n1947\nnull\n\"first scientist to clone HIV a…\n\n\n\"Jennifer Doudna\"\n\"Biochemist\"\n1964\nnull\n\"one of the primary developers …"
+  },
+  {
+    "objectID": "lectures/3d.html#student-records",
+    "href": "lectures/3d.html#student-records",
+    "title": "3D: Data Preparation",
+    "section": "Student records",
+    "text": "Student records\n\nHave:\n\nEnrolment: official university enrolment records\nSurvey: Student provided info missing students who never filled it out and including students who filled it out but dropped the class\n\nWant: Survey info for all enrolled in class"
+  },
+  {
+    "objectID": "lectures/3d.html#section",
+    "href": "lectures/3d.html#section",
+    "title": "3D: Data Preparation",
+    "section": "",
+    "text": "enrolment\n\n\nshape: (3, 2)\n\n\n\nid\nname\n\n\ni64\nstr\n\n\n\n\n1\n\"Dave Friday\"\n\n\n2\n\"Hermine\"\n\n\n3\n\"Sura Selvarajah\"\n\n\n\n\n\n\n\n\nsurvey\n\n\nshape: (4, 3)\n\n\n\nid\nname\nusername\n\n\ni64\nstr\nstr\n\n\n\n\n2\n\"Hermine\"\n\"bakealongwithhermine\"\n\n\n3\n\"Sura\"\n\"surasbakes\"\n\n\n4\n\"Peter\"\n\"peter_bakes\"\n\n\n5\n\"Mark\"\n\"thebakingbuddha\""
+  },
+  {
+    "objectID": "lectures/3d.html#student-records-1",
+    "href": "lectures/3d.html#student-records-1",
+    "title": "3D: Data Preparation",
+    "section": "Student records",
+    "text": "Student records\n\nLeftAnti\n\n\n\nenrolment.join(survey, on = \"id\", how = \"left\") \n\n\nshape: (3, 4)\n\n\n\nid\nname\nname_right\nusername\n\n\ni64\nstr\nstr\nstr\n\n\n\n\n1\n\"Dave Friday\"\nnull\nnull\n\n\n2\n\"Hermine\"\n\"Hermine\"\n\"bakealongwithhermine\"\n\n\n3\n\"Sura Selvarajah\"\n\"Sura\"\n\"surasbakes\"\n\n\n\n\n\n\n\n\n\nenrolment.join(survey, on = \"id\", how = \"anti\") \n\n\nshape: (1, 2)\n\n\n\nid\nname\n\n\ni64\nstr\n\n\n\n\n1\n\"Dave Friday\""
+  },
+  {
+    "objectID": "lectures/3d.html#grocery-sales",
+    "href": "lectures/3d.html#grocery-sales",
+    "title": "3D: Data Preparation",
+    "section": "Grocery sales",
+    "text": "Grocery sales\n\nHave:\n\nPurchases: One row per customer per item, listing purchases they made\nPrices: One row per item in the store, listing their prices\n\nWant: Total revenue"
+  },
+  {
+    "objectID": "lectures/3d.html#section-1",
+    "href": "lectures/3d.html#section-1",
+    "title": "3D: Data Preparation",
+    "section": "",
+    "text": "purchases\n\n\nshape: (5, 2)\n\n\n\ncustomer_id\nitem\n\n\ni64\nstr\n\n\n\n\n1\n\"bread\"\n\n\n1\n\"milk\"\n\n\n1\n\"banana\"\n\n\n2\n\"milk\"\n\n\n2\n\"toilet paper\"\n\n\n\n\n\n\n\n\nprices\n\n\nshape: (5, 2)\n\n\n\nitem\nprice\n\n\nstr\nf64\n\n\n\n\n\"avocado\"\n0.5\n\n\n\"banana\"\n0.15\n\n\n\"bread\"\n1.0\n\n\n\"milk\"\n0.8\n\n\n\"toilet paper\"\n3.0"
+  },
+  {
+    "objectID": "lectures/3d.html#grocery-sales-1",
+    "href": "lectures/3d.html#grocery-sales-1",
+    "title": "3D: Data Preparation",
+    "section": "Grocery sales",
+    "text": "Grocery sales\n\nStatsAggregate Stats\n\n\n\n\n\n\npurchases.join(prices, on = \"item\", how = \"left\")\n\n\nshape: (5, 3)\n\n\n\ncustomer_id\nitem\nprice\n\n\ni64\nstr\nf64\n\n\n\n\n1\n\"bread\"\n1.0\n\n\n1\n\"milk\"\n0.8\n\n\n1\n\"banana\"\n0.15\n\n\n2\n\"milk\"\n0.8\n\n\n2\n\"toilet paper\"\n3.0\n\n\n\n\n\n\n\n\n(\n    purchases\n        .join(prices, on = \"item\", how = \"left\")\n        .select(pl.sum(\"price\"))\n)\n\n\nshape: (1, 1)\n\n\n\nprice\n\n\nf64\n\n\n\n\n5.75\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npurchases.join(prices, on = \"item\", how = \"left\")\n\n\nshape: (5, 3)\n\n\n\ncustomer_id\nitem\nprice\n\n\ni64\nstr\nf64\n\n\n\n\n1\n\"bread\"\n1.0\n\n\n1\n\"milk\"\n0.8\n\n\n1\n\"banana\"\n0.15\n\n\n2\n\"milk\"\n0.8\n\n\n2\n\"toilet paper\"\n3.0\n\n\n\n\n\n\n\n\n(\n    purchases\n        .join(prices, on = \"item\", how = \"left\")\n        .group_by(\"customer_id\")\n        .agg(total_revenue = pl.sum(\"price\"))\n)\n\n\nshape: (2, 2)\n\n\n\ncustomer_id\ntotal_revenue\n\n\ni64\nf64\n\n\n\n\n2\n3.8\n\n\n1\n1.95"
+  }
+]

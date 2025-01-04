@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.39">
+
+  <title>d200x – 2C: Data Visualisation</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-bbe7401fe57d4b791b917637bb662036.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">2C: Data Visualisation</h1>
+  <p class="subtitle">Numerical Data</p>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="terminology" class="title-slide slide level1 center">
+<h1>Terminology</h1>
+
+</section>
+<section id="number-of-variables-involved" class="slide level2">
+<h2>Number of variables involved</h2>
+<ul>
+<li>Univariate data analysis - distribution of single variable</li>
+<li>Bivariate data analysis - relationship between two variables</li>
+<li>Multivariate data analysis - relationship between many variables at once, usually focusing on the relationship between two while conditioning for others</li>
+</ul>
+</section>
+<section id="types-of-variables" class="slide level2">
+<h2>Types of variables</h2>
+<ul>
+<li><strong>Numerical variables</strong> can be classified as <strong>continuous</strong> or <strong>discrete</strong> based on whether or not the variable can take on an infinite number of values or only non-negative whole numbers, respectively.</li>
+<li>If the variable is <strong>categorical</strong>, we can determine if it is <strong>ordinal</strong> based on whether or not the levels have a natural ordering.</li>
+</ul>
+</section></section>
+<section>
+<section id="data" class="title-slide slide level1 center">
+<h1>Data</h1>
+
+</section>
+<section id="data-lending-club" class="slide level2">
+<h2>Data: Lending Club</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li><p>Thousands of loans made through the Lending Club, which is a platform that allows individuals to lend to other individuals</p></li>
+<li><p>Not all loans are created equal – ease of getting a loan depends on (apparent) ability to pay back the loan</p></li>
+<li><p>Data includes loans <em>made</em>, these are not loan applications</p></li>
+</ul>
+</div><div class="column">
+<p><img data-src="img/lending-club.png"></p>
+</div></div>
+</section>
+<section id="take-a-peek-at-data" class="slide level2">
+<h2>Take a peek at data</h2>
+<div id="6def561e" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>loan_full_schema.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 10000
+Columns: 55
+$ emp_title                        &lt;str&gt; 'global config engineer ', 'warehouse office clerk', 'assembly', 'customer service', 'security supervisor ', None, 'hr ', 'police', 'parts', '4th person'
+$ emp_length                       &lt;i64&gt; 3, 10, 3, 1, 10, None, 10, 10, 10, 3
+$ state                            &lt;str&gt; 'NJ', 'HI', 'WI', 'PA', 'CA', 'KY', 'MI', 'AZ', 'NV', 'IL'
+$ homeownership                    &lt;str&gt; 'MORTGAGE', 'RENT', 'RENT', 'RENT', 'RENT', 'OWN', 'MORTGAGE', 'MORTGAGE', 'MORTGAGE', 'RENT'
+$ annual_income                    &lt;f64&gt; 90000.0, 40000.0, 40000.0, 30000.0, 35000.0, 34000.0, 35000.0, 110000.0, 65000.0, 30000.0
+$ verified_income                  &lt;str&gt; 'Verified', 'Not Verified', 'Source Verified', 'Not Verified', 'Verified', 'Not Verified', 'Source Verified', 'Source Verified', 'Source Verified', 'Not Verified'
+$ debt_to_income                   &lt;f64&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, 23.66, 16.19, 36.48, 18.91
+$ annual_income_joint              &lt;f64&gt; None, None, None, None, 57000.0, None, 155000.0, None, None, None
+$ verification_income_joint        &lt;str&gt; None, None, None, None, 'Verified', None, 'Not Verified', None, None, None
+$ debt_to_income_joint             &lt;f64&gt; None, None, None, None, 37.66, None, 13.12, None, None, None
+$ delinq_2y                        &lt;i64&gt; 0, 0, 0, 0, 0, 1, 0, 1, 1, 0
+$ months_since_last_delinq         &lt;i64&gt; 38, None, 28, None, None, 3, None, 19, 18, None
+$ earliest_credit_line             &lt;i64&gt; 2001, 1996, 2006, 2007, 2008, 1990, 2004, 2005, 1998, 2001
+$ inquiries_last_12m               &lt;i64&gt; 6, 1, 4, 0, 7, 6, 1, 1, 3, 0
+$ total_credit_lines               &lt;i64&gt; 28, 30, 31, 4, 22, 32, 12, 30, 35, 9
+$ open_credit_lines                &lt;i64&gt; 10, 14, 10, 4, 16, 12, 10, 15, 21, 6
+$ total_credit_limit               &lt;i64&gt; 70795, 28800, 24193, 25400, 69839, 42100, 291852, 342336, 283190, 33114
+$ total_credit_utilized            &lt;i64&gt; 38767, 4321, 16000, 4997, 52722, 3898, 18916, 60805, 69561, 17768
+$ num_collections_last_12m         &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ num_historical_failed_to_pay     &lt;i64&gt; 0, 1, 0, 1, 0, 0, 0, 0, 0, 0
+$ months_since_90d_late            &lt;i64&gt; 38, None, 28, None, None, 60, None, 71, 18, None
+$ current_accounts_delinq          &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ total_collection_amount_ever     &lt;i64&gt; 1250, 0, 432, 0, 0, 0, 0, 0, 0, 0
+$ current_installment_accounts     &lt;i64&gt; 2, 0, 1, 1, 1, 0, 2, 2, 6, 1
+$ accounts_opened_24m              &lt;i64&gt; 5, 11, 13, 1, 6, 2, 1, 4, 10, 5
+$ months_since_last_credit_inquiry &lt;i64&gt; 5, 8, 7, 15, 4, 5, 9, 7, 4, 17
+$ num_satisfactory_accounts        &lt;i64&gt; 10, 14, 10, 4, 16, 12, 10, 15, 21, 6
+$ num_accounts_120d_past_due       &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, None, 0, 0
+$ num_accounts_30d_past_due        &lt;i64&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ num_active_debit_accounts        &lt;i64&gt; 2, 3, 3, 2, 10, 1, 3, 5, 11, 3
+$ total_debit_limit                &lt;i64&gt; 11100, 16500, 4300, 19400, 32700, 27200, 9100, 22250, 36700, 14700
+$ num_total_cc_accounts            &lt;i64&gt; 14, 24, 14, 3, 20, 27, 8, 16, 19, 7
+$ num_open_cc_accounts             &lt;i64&gt; 8, 14, 8, 3, 15, 12, 7, 12, 14, 5
+$ num_cc_carrying_balance          &lt;i64&gt; 6, 4, 6, 2, 13, 5, 6, 10, 14, 3
+$ num_mort_accounts                &lt;i64&gt; 1, 0, 0, 0, 0, 3, 2, 7, 2, 0
+$ account_never_delinq_percent     &lt;f64&gt; 92.9, 100.0, 93.5, 100.0, 100.0, 78.1, 100.0, 93.0, 97.1, 100.0
+$ tax_liens                        &lt;i64&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0
+$ public_record_bankrupt           &lt;i64&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0
+$ loan_purpose                     &lt;str&gt; 'moving', 'debt_consolidation', 'other', 'debt_consolidation', 'credit_card', 'other', 'credit_card', 'debt_consolidation', 'home_improvement', 'credit_card'
+$ application_type                 &lt;str&gt; 'individual', 'individual', 'individual', 'individual', 'joint', 'individual', 'joint', 'individual', 'individual', 'individual'
+$ loan_amount                      &lt;i64&gt; 28000, 5000, 2000, 21600, 23000, 5000, 24000, 20000, 20000, 6400
+$ term                             &lt;i64&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36
+$ interest_rate                    &lt;f64&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, 13.59, 11.99, 13.59, 6.71
+$ installment                      &lt;f64&gt; 652.53, 167.54, 71.4, 664.19, 786.87, 153.75, 553.35, 444.79, 679.58, 196.77
+$ grade                            &lt;str&gt; 'C', 'C', 'D', 'A', 'C', 'A', 'C', 'B', 'C', 'A'
+$ sub_grade                        &lt;str&gt; 'C3', 'C1', 'D1', 'A3', 'C3', 'A3', 'C2', 'B5', 'C2', 'A3'
+$ issue_month                      &lt;str&gt; 'Mar-2018', 'Feb-2018', 'Feb-2018', 'Jan-2018', 'Mar-2018', 'Jan-2018', 'Jan-2018', 'Jan-2018', 'Feb-2018', 'Mar-2018'
+$ loan_status                      &lt;str&gt; 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current', 'Current'
+$ initial_listing_status           &lt;str&gt; 'whole', 'whole', 'fractional', 'whole', 'whole', 'whole', 'whole', 'whole', 'whole', 'fractional'
+$ disbursement_method              &lt;str&gt; 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash', 'Cash'
+$ balance                          &lt;f64&gt; 27015.86, 4651.37, 1824.63, 18853.26, 21430.15, 4256.71, 22560.0, 19005.39, 18156.66, 6077.13
+$ paid_total                       &lt;f64&gt; 1999.33, 499.12, 281.8, 3312.89, 2324.65, 873.13, 2730.51, 1765.84, 2703.22, 391.15
+$ paid_principal                   &lt;f64&gt; 984.14, 348.63, 175.37, 2746.74, 1569.85, 743.29, 1440.0, 994.61, 1843.34, 322.87
+$ paid_interest                    &lt;f64&gt; 1015.19, 150.49, 106.43, 566.15, 754.8, 129.84, 1290.51, 771.23, 859.88, 68.28
+$ paid_late_fees                   &lt;f64&gt; 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+</code></pre>
+</div>
+</div>
+</section>
+<section id="selected-variables" class="slide level2">
+<h2>Selected variables</h2>
+<div id="e55ea491" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a>loans <span class="op">=</span> (</span>
+<span id="cb3-2"><a></a>    loan_full_schema</span>
+<span id="cb3-3"><a></a>        .select(pl.col(<span class="st">"loan_amount"</span>), </span>
+<span id="cb3-4"><a></a>                pl.col(<span class="st">"interest_rate"</span>), </span>
+<span id="cb3-5"><a></a>                pl.col(<span class="st">"term"</span>), </span>
+<span id="cb3-6"><a></a>                pl.col(<span class="st">"grade"</span>),</span>
+<span id="cb3-7"><a></a>                pl.col(<span class="st">"state"</span>), </span>
+<span id="cb3-8"><a></a>                pl.col(<span class="st">"annual_income"</span>), </span>
+<span id="cb3-9"><a></a>                pl.col(<span class="st">"homeownership"</span>), </span>
+<span id="cb3-10"><a></a>                pl.col(<span class="st">"debt_to_income"</span>))</span>
+<span id="cb3-11"><a></a></span>
+<span id="cb3-12"><a></a>)</span>
+<span id="cb3-13"><a></a>loans.glimpse()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 10000
+Columns: 8
+$ loan_amount    &lt;i64&gt; 28000, 5000, 2000, 21600, 23000, 5000, 24000, 20000, 20000, 6400
+$ interest_rate  &lt;f64&gt; 14.07, 12.61, 17.09, 6.72, 14.07, 6.72, 13.59, 11.99, 13.59, 6.71
+$ term           &lt;i64&gt; 60, 36, 36, 36, 36, 36, 60, 60, 36, 36
+$ grade          &lt;str&gt; 'C', 'C', 'D', 'A', 'C', 'A', 'C', 'B', 'C', 'A'
+$ state          &lt;str&gt; 'NJ', 'HI', 'WI', 'PA', 'CA', 'KY', 'MI', 'AZ', 'NV', 'IL'
+$ annual_income  &lt;f64&gt; 90000.0, 40000.0, 40000.0, 30000.0, 35000.0, 34000.0, 35000.0, 110000.0, 65000.0, 30000.0
+$ homeownership  &lt;str&gt; 'MORTGAGE', 'RENT', 'RENT', 'RENT', 'RENT', 'OWN', 'MORTGAGE', 'MORTGAGE', 'MORTGAGE', 'RENT'
+$ debt_to_income &lt;f64&gt; 18.01, 5.04, 21.15, 10.16, 57.96, 6.46, 23.66, 16.19, 36.48, 18.91
+</code></pre>
+</div>
+</div>
+</section>
+<section id="selected-variables-1" class="slide level2">
+<h2>Selected variables</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>variable</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>loan_amount</code></td>
+<td>Amount of the loan received, in US dollars</td>
+</tr>
+<tr class="even">
+<td><code>interest_rate</code></td>
+<td>Interest rate on the loan, in an annual percentage</td>
+</tr>
+<tr class="odd">
+<td><code>term</code></td>
+<td>The length of the loan, which is always set as a whole number of months</td>
+</tr>
+<tr class="even">
+<td><code>grade</code></td>
+<td>Loan grade, which takes a values A through G and represents the quality of the loan and its likelihood of being repaid</td>
+</tr>
+<tr class="odd">
+<td><code>state</code></td>
+<td>US state where the borrower resides</td>
+</tr>
+<tr class="even">
+<td><code>annual_income</code></td>
+<td>Borrower’s annual income, including any second income, in US dollars</td>
+</tr>
+<tr class="odd">
+<td><code>homeownership</code></td>
+<td>Indicates whether the person owns, owns but has a mortgage, or rents</td>
+</tr>
+<tr class="even">
+<td><code>debt_to_income</code></td>
+<td>Debt-to-income ratio</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="variable-types" class="slide level2">
+<h2>Variable types</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>variable</th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>loan_amount</code></td>
+<td>numerical, continuous</td>
+</tr>
+<tr class="even">
+<td><code>interest_rate</code></td>
+<td>numerical, continuous</td>
+</tr>
+<tr class="odd">
+<td><code>term</code></td>
+<td>numerical, discrete</td>
+</tr>
+<tr class="even">
+<td><code>grade</code></td>
+<td>categorical, ordinal</td>
+</tr>
+<tr class="odd">
+<td><code>state</code></td>
+<td>categorical, not ordinal</td>
+</tr>
+<tr class="even">
+<td><code>annual_income</code></td>
+<td>numerical, continuous</td>
+</tr>
+<tr class="odd">
+<td><code>homeownership</code></td>
+<td>categorical, not ordinal</td>
+</tr>
+<tr class="even">
+<td><code>debt_to_income</code></td>
+<td>numerical, continuous</td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="visualizing-numerical-data" class="title-slide slide level1 center">
+<h1>Visualizing numerical data</h1>
+
+</section>
+<section id="describing-shapes-of-numerical-distributions" class="slide level2">
+<h2>Describing shapes of numerical distributions</h2>
+<ul>
+<li>shape:
+<ul>
+<li>skewness: right-skewed, left-skewed, symmetric (skew is to the side of the longer tail)</li>
+<li>modality: unimodal, bimodal, multimodal, uniform</li>
+</ul></li>
+<li>center: mean (<code>mean</code>), median (<code>median</code>), mode (not always useful)</li>
+<li>spread: range (<code>range</code>), standard deviation (<code>sd</code>), inter-quartile range (<code>IQR</code>)</li>
+<li>unusual observations</li>
+</ul>
+</section></section>
+<section>
+<section id="histogram" class="title-slide slide level1 center">
+<h1>Histogram</h1>
+
+</section>
+<section id="histogram-1" class="slide level2">
+<h2>Histogram</h2>
+<div id="4aa49416" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>(</span>
+<span id="cb5-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb5-3"><a></a>  <span class="op">+</span> geom_histogram()</span>
+<span id="cb5-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-5-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="histograms-and-binwidth" class="slide level2">
+<h2>Histograms and binwidth</h2>
+<div id="062ad824" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>(</span>
+<span id="cb6-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb6-3"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">1000</span>)</span>
+<span id="cb6-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-6-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="42986a27" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a></a>(</span>
+<span id="cb7-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb7-3"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">5000</span>)</span>
+<span id="cb7-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-7-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="0efa582e" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>(</span>
+<span id="cb8-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>)) </span>
+<span id="cb8-3"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">20000</span>)</span>
+<span id="cb8-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-8-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="customizing-histograms" class="slide level2">
+<h2>Customizing histograms</h2>
+<div id="a86cd85c" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a></a>(</span>
+<span id="cb9-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb9-3"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">5000</span>)</span>
+<span id="cb9-4"><a></a>  <span class="op">+</span> labs(</span>
+<span id="cb9-5"><a></a>    x <span class="op">=</span> <span class="st">"Loan amount ($)"</span>,</span>
+<span id="cb9-6"><a></a>    y <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
+<span id="cb9-7"><a></a>    title <span class="op">=</span> <span class="st">"Amounts of Lending Club loans"</span> </span>
+<span id="cb9-8"><a></a>  )</span>
+<span id="cb9-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-9-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fill-with-a-categorical-variable" class="slide level2">
+<h2>Fill with a categorical variable</h2>
+<div id="c64d85c6" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>(</span>
+<span id="cb10-2"><a></a>ggplot(loans, aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>, </span>
+<span id="cb10-3"><a></a>                  fill <span class="op">=</span> <span class="st">"homeownership"</span>))</span>
+<span id="cb10-4"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">5000</span>,</span>
+<span id="cb10-5"><a></a>                 alpha <span class="op">=</span> <span class="fl">0.5</span>)</span>
+<span id="cb10-6"><a></a>  <span class="op">+</span> labs(</span>
+<span id="cb10-7"><a></a>    x <span class="op">=</span> <span class="st">"Loan amount ($)"</span>,</span>
+<span id="cb10-8"><a></a>    y <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
+<span id="cb10-9"><a></a>    title <span class="op">=</span> <span class="st">"Amounts of Lending Club loans"</span></span>
+<span id="cb10-10"><a></a>  )</span>
+<span id="cb10-11"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-10-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="facet-with-a-categorical-variable" class="slide level2">
+<h2>Facet with a categorical variable</h2>
+<div id="b4810695" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a>(</span>
+<span id="cb11-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>, </span>
+<span id="cb11-3"><a></a>                              fill <span class="op">=</span> <span class="st">"homeownership"</span>)) </span>
+<span id="cb11-4"><a></a>  <span class="op">+</span> geom_histogram(binwidth <span class="op">=</span> <span class="dv">5000</span>)</span>
+<span id="cb11-5"><a></a>  <span class="op">+</span> labs(</span>
+<span id="cb11-6"><a></a>    x <span class="op">=</span> <span class="st">"Loan amount ($)"</span>,</span>
+<span id="cb11-7"><a></a>    y <span class="op">=</span> <span class="st">"Frequency"</span>,</span>
+<span id="cb11-8"><a></a>    title <span class="op">=</span> <span class="st">"Amounts of Lending Club loans"</span></span>
+<span id="cb11-9"><a></a>  ) </span>
+<span id="cb11-10"><a></a>  <span class="op">+</span> facet_wrap(<span class="st">"homeownership"</span>, nrow <span class="op">=</span> <span class="dv">3</span>)</span>
+<span id="cb11-11"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-11-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="density-plot" class="title-slide slide level1 center">
+<h1>Density plot</h1>
+
+</section>
+<section id="density-plot-1" class="slide level2">
+<h2>Density plot</h2>
+<div id="d29e52e3" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a></a>(</span>
+<span id="cb12-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>)) </span>
+<span id="cb12-3"><a></a>  <span class="op">+</span> geom_density()</span>
+<span id="cb12-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-12-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="density-plots-and-adjusting-bandwidth" class="slide level2">
+<h2>Density plots and adjusting bandwidth</h2>
+<div id="5a7324f0" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a></a>(</span>
+<span id="cb13-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb13-3"><a></a>  <span class="op">+</span> geom_density(adjust <span class="op">=</span> <span class="fl">0.5</span>)</span>
+<span id="cb13-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-13-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="7df74bfa" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a></a>(</span>
+<span id="cb14-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>)) </span>
+<span id="cb14-3"><a></a>  <span class="op">+</span> geom_density(adjust <span class="op">=</span> <span class="dv">1</span>) <span class="co"># default bandwidth</span></span>
+<span id="cb14-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-14-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="c68ec93b" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a></a>(</span>
+<span id="cb15-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>)) </span>
+<span id="cb15-3"><a></a>  <span class="op">+</span> geom_density(adjust <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb15-4"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-15-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="customizing-density-plots" class="slide level2">
+<h2>Customizing density plots</h2>
+<div id="7e9cd519" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a></a>(</span>
+<span id="cb16-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>))</span>
+<span id="cb16-3"><a></a>  <span class="op">+</span> geom_density(adjust <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb16-4"><a></a>  <span class="op">+</span> labs( </span>
+<span id="cb16-5"><a></a>    x <span class="op">=</span> <span class="st">"Loan amount ($)"</span>,</span>
+<span id="cb16-6"><a></a>    y <span class="op">=</span> <span class="st">"Density"</span>,</span>
+<span id="cb16-7"><a></a>    title <span class="op">=</span> <span class="st">"Amounts of Lending Club loans"</span></span>
+<span id="cb16-8"><a></a>   )</span>
+<span id="cb16-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-16-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="adding-a-categorical-variable" class="slide level2">
+<h2>Adding a categorical variable</h2>
+<div id="5dcf91bb" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a></a>(</span>
+<span id="cb17-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"loan_amount"</span>, </span>
+<span id="cb17-3"><a></a>                  fill <span class="op">=</span> <span class="st">"homeownership"</span>))</span>
+<span id="cb17-4"><a></a>  <span class="op">+</span> geom_density(adjust <span class="op">=</span> <span class="dv">2</span>, </span>
+<span id="cb17-5"><a></a>                alpha <span class="op">=</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-6"><a></a>  <span class="op">+</span> labs(</span>
+<span id="cb17-7"><a></a>      x <span class="op">=</span> <span class="st">"Loan amount ($)"</span>,</span>
+<span id="cb17-8"><a></a>      y <span class="op">=</span> <span class="st">"Density"</span>,</span>
+<span id="cb17-9"><a></a>      title <span class="op">=</span> <span class="st">"Amounts of Lending Club loans"</span>, </span>
+<span id="cb17-10"><a></a>      fill <span class="op">=</span> <span class="st">"Homeownership"</span></span>
+<span id="cb17-11"><a></a>    )</span>
+<span id="cb17-12"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-17-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="box-plot" class="title-slide slide level1 center">
+<h1>Box plot</h1>
+
+</section>
+<section id="box-plot-1" class="slide level2">
+<h2>Box plot</h2>
+<div id="1ae41431" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a></a>(</span>
+<span id="cb18-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"grade"</span>,</span>
+<span id="cb18-3"><a></a>                              y <span class="op">=</span> <span class="st">"interest_rate"</span>))</span>
+<span id="cb18-4"><a></a>  <span class="op">+</span> geom_boxplot()</span>
+<span id="cb18-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-18-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="customizing-box-plots" class="slide level2">
+<h2>Customizing box plots</h2>
+<div id="d8ea90f2" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a></a>(</span>
+<span id="cb19-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"grade"</span>,</span>
+<span id="cb19-3"><a></a>                              y <span class="op">=</span> <span class="st">"interest_rate"</span>))</span>
+<span id="cb19-4"><a></a>  <span class="op">+</span> geom_boxplot()</span>
+<span id="cb19-5"><a></a>  <span class="op">+</span> labs(</span>
+<span id="cb19-6"><a></a>    y <span class="op">=</span> <span class="st">"Interest rate (%)"</span>,</span>
+<span id="cb19-7"><a></a>    title <span class="op">=</span> <span class="st">"Interest rates of Lending Club loans"</span></span>
+<span id="cb19-8"><a></a>    )</span>
+<span id="cb19-9"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-19-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="relationships-numerical-variables" class="title-slide slide level1 center">
+<h1>Relationships numerical variables</h1>
+
+</section>
+<section id="scatterplot" class="slide level2">
+<h2>Scatterplot</h2>
+<div id="01d901f7" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a></a>(</span>
+<span id="cb20-2"><a></a>ggplot(loans.to_pandas(), aes(x <span class="op">=</span> <span class="st">"debt_to_income"</span>, </span>
+<span id="cb20-3"><a></a>                              y <span class="op">=</span> <span class="st">"interest_rate"</span>))</span>
+<span id="cb20-4"><a></a>  <span class="op">+</span> geom_point()</span>
+<span id="cb20-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="2c_files/figure-revealjs/cell-20-output-1.png" width="960" height="480"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true,"theme":"whiteboard","chalkWidth":4},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

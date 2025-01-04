@@ -17,6 +17,7 @@ format:
       chalk-width: 4
 execute:
   echo: true
+  eval: false
 ---
 
 

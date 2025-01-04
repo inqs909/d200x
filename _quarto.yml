@@ -1,5 +1,14 @@
 project:
   type: website
+  output-dir: docs
+  render: 
+    - "*.qmd"
+    - "!files/"
+  resources:
+    - "*.json"
+    - "files"
+    - "_extensions"
+
 
 website:
   title: "d200x"
